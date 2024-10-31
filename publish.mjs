@@ -26,6 +26,26 @@ function runCommand(command, errorMessage) {
 	}
 }
 
+function tagRelease() {
+	try {
+		// Check if the tag exists
+		const existingTags = execSync('git tag').toString().split('\n');
+		if (existingTags.includes(`v${version}`)) {
+			console.log(` ${YELLOW}Tag v${version} already exists. Deleting...${RESET}`);
+			execSync(`git tag -d v${version}`);
+			execSync(`git push origin --delete v${version}`);
+		}
+
+		// Create and push the new tag
+		runCommand(`git tag -a "v${version}" -m "Release version ${version}"`, 'Failed to tag the release.');
+		runCommand('git push origin --tags', 'Failed to push tags.');
+	} catch (err) {
+		console.error(` ${RED}${FAIL} Tagging or pushing tags failed.${RESET}`);
+		console.debug(err);
+		process.exit(1);
+	}
+}
+
 // Step 1: Check for uncommitted changes
 try {
 	const gitStatus = execSync('git status --porcelain').toString().trim();
@@ -64,16 +84,7 @@ runCommand('npm run lint', 'Linting failed. Aborting publish.');
 runCommand('npm run build', 'Build failed. Aborting publish.');
 
 // Step 7: Tag the release
-const version = packageJson.version;
-try {
-	runCommand(`git tag -a "v${version}" -m "Release version ${version}"`, 'Failed to tag the release.');
-	runCommand('git push origin --tags', 'Failed to push tags.');
-} catch (err) {
-	console.error(` ${RED}${FAIL} Tagging or pushing tags failed.${RESET}`);
-	console.debug(err);
-	process.exit(1);
-}
-
+tagRelease();
 // Step 8: Publish the package
 runCommand('npm publish', 'Publishing failed.');
 
