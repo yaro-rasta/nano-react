@@ -1,11 +1,11 @@
 // publish.mjs
 import { execSync } from 'node:child_process';
-import fs from 'fs';
-import { createRequire } from 'module';
+import fs from 'node:fs';
+import { createRequire } from 'node:module';
 
 // Use createRequire to import package.json
 const require = createRequire(import.meta.url);
-const packageJson = require('./package.json');
+const { version } = require('./package.json');
 
 // Color and symbol constants
 const GREEN = '\x1b[92m'; // Green Text
@@ -24,6 +24,22 @@ function runCommand(command, errorMessage) {
 		console.debug(err);
 		process.exit(1);
 	}
+}
+
+function checkUncommitted() {
+	try {
+		const gitStatus = execSync('git status --porcelain').toString().trim();
+		if (gitStatus) {
+			console.error(` ${RED}${FAIL} Uncommitted changes found.${RESET}`);
+			console.error('   Please commit or stash them before publishing.');
+			process.exit(1);
+		}
+		console.log(` ${GREEN}${OK}${RESET} No uncommitted changes.`);
+	} catch (err) {
+		console.error(` ${RED}${FAIL} Failed to check for uncommitted changes.${RESET}`);
+		console.debug(err);
+		process.exit(1);
+	}	
 }
 
 function tagRelease() {
@@ -45,21 +61,8 @@ function tagRelease() {
 		process.exit(1);
 	}
 }
-
 // Step 1: Check for uncommitted changes
-try {
-	const gitStatus = execSync('git status --porcelain').toString().trim();
-	if (gitStatus) {
-		console.error(` ${RED}${FAIL} Uncommitted changes found.${RESET}`);
-		console.error('   Please commit or stash them before publishing.');
-		process.exit(1);
-	}
-	console.log(` ${GREEN}${OK}${RESET} No uncommitted changes.`);
-} catch (err) {
-	console.error(` ${RED}${FAIL} Failed to check for uncommitted changes.${RESET}`);
-	console.debug(err);
-	process.exit(1);
-}
+checkUncommitted();
 
 // Step 2: Pull latest changes
 runCommand(
@@ -85,6 +88,7 @@ runCommand('npm run build', 'Build failed. Aborting publish.');
 
 // Step 7: Tag the release
 tagRelease();
+
 // Step 8: Publish the package
 runCommand('npm publish', 'Publishing failed.');
 
