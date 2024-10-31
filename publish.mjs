@@ -19,8 +19,9 @@ function runCommand(command, errorMessage) {
 	try {
 		execSync(command, { stdio: 'inherit' });
 		console.log(` ${GREEN}${OK}${RESET} ${command}`);
-	} catch (error) {
+	} catch (err) {
 		console.error(` ${RED}${FAIL} ${errorMessage}${RESET}`);
+		console.debug(err);
 		process.exit(1);
 	}
 }
@@ -34,8 +35,9 @@ try {
 		process.exit(1);
 	}
 	console.log(` ${GREEN}${OK}${RESET} No uncommitted changes.`);
-} catch (error) {
+} catch (err) {
 	console.error(` ${RED}${FAIL} Failed to check for uncommitted changes.${RESET}`);
+	console.debug(err);
 	process.exit(1);
 }
 
@@ -66,8 +68,9 @@ const version = packageJson.version;
 try {
 	runCommand(`git tag -a "v${version}" -m "Release version ${version}"`, 'Failed to tag the release.');
 	runCommand('git push origin --tags', 'Failed to push tags.');
-} catch (error) {
+} catch (err) {
 	console.error(` ${RED}${FAIL} Tagging or pushing tags failed.${RESET}`);
+	console.debug(err);
 	process.exit(1);
 }
 

@@ -88,28 +88,35 @@ const useDBState = (key, defaultValue, dbOpts = { name: 'db', store: 'store' }) 
 	const [value, setValue] = useState(defaultValue);
 	const didInit = useRef(false);
 
+	// Extracted dependencies to avoid complex expressions in useEffect
+	const dbName = dbOpts.name;
+	const storeName = dbOpts.store;
+	const serializedValue = JSON.stringify(value);
+
 	useEffect(() => {
 		if (!didInit.current) {
-			getDbValue(dbOpts.name, dbOpts.store, key).then((storedValue) => {
-				if (storedValue !== undefined) {
-					setValue(storedValue);
-				}
-				didInit.current = true;
-			}).catch((error) => {
-				console.error('Error fetching value from IndexedDB:', error);
-			});
+			getDbValue(dbName, storeName, key)
+				.then((storedValue) => {
+					if (storedValue !== undefined) {
+						setValue(storedValue);
+					}
+					didInit.current = true;
+				})
+				.catch((error) => {
+					console.error('Error fetching value from IndexedDB:', error);
+				});
 
 			subscribe(key, setValue);
 		}
-	}, [dbOpts, key]);
+	}, [dbName, storeName, key]);
 
 	useEffect(() => {
 		if (didInit.current) {
-			setDbValue(dbOpts.name, dbOpts.store, key, value).catch((error) => {
+			setDbValue(dbName, storeName, key, value).catch((error) => {
 				console.error('Error setting value in IndexedDB:', error);
 			});
 		}
-	}, [dbOpts.name, dbOpts.store, key, JSON.stringify(value)]);
+	}, [dbName, storeName, key, serializedValue, value]);
 
 	return [value, setValue];
 };

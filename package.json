@@ -22,7 +22,7 @@
 		"build": "vite build",
 		"lint": "eslint .",
 		"preview": "vite preview",
-		"publish": "node publish.js",
+		"publish": "node publish.mjs",
 		"test": "echo -e\"Nothing to test yet\""
 	},
 	"dependencies": {

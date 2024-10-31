@@ -36,8 +36,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `getDbInstance`, `getDbValue`, and `setDbValue` functions for handling IndexedDB operations.
 - Vite Configuration: 
   - Configured Vite to build the project in library mode, ensuring `react` and `react-dom` are treated as external dependencies.
-- Documentation and Console Warnings: 
-  - Warnings and error messages for invalid usage, such as non-string keys in `localStorage` and `sessionStorage` hooks.
 - Example Project: 
   - A simple React application demonstrating the use of the `nano-react` hooks, complete with a responsive layout and Vite integration.
 
