@@ -23,7 +23,7 @@
 		"lint": "eslint .",
 		"preview": "vite preview",
 		"publish": "node publish.mjs",
-		"test": "echo -e\"Nothing to test yet\""
+		"test": "echo -e \"Nothing to test yet\""
 	},
 	"dependencies": {
 		"react": "^18.3.1",
