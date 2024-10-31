@@ -25,7 +25,7 @@ function runCommand(command, errorMessage) {
 		console.log(` ${GREEN}${OK}${RESET} ${command}`);
 	} catch (err) {
 		console.error(` ${RED}${FAIL} ${errorMessage}${RESET}`);
-		console.debug(err);
+		console.debug(err.stack);
 		process.exit(1);
 	}
 }
@@ -41,27 +41,19 @@ function checkUncommitted() {
 		console.log(` ${GREEN}${OK}${RESET} No uncommitted changes.`);
 	} catch (err) {
 		console.error(` ${RED}${FAIL} Failed to check for uncommitted changes.${RESET}`);
-		console.debug(err);
+		console.debug(err.stack);
 		process.exit(1);
 	}	
 }
 
 function tagRelease() {
 	try {
-		// Check if the tag exists
-		const existingTags = execSync('git tag').toString().split('\n');
-		if (existingTags.includes(`v${version}`)) {
-			console.log(` ${YELLOW}Tag v${version} already exists. Deleting...${RESET}`);
-			// execSync(`git tag -d v${version}`);
-			// execSync(`git push origin --delete v${version}`);
-		}
-
 		// Create and push the new tag
 		runCommand(`git tag -a "v${version}" -m "Release version ${version}"`, 'Failed to tag the release.');
 		runCommand('git push origin --tags', 'Failed to push tags.');
 	} catch (err) {
 		console.error(` ${RED}${FAIL} Tagging or pushing tags failed.${RESET}`);
-		console.debug(err);
+		console.debug(err.stack);
 		process.exit(1);
 	}
 }
