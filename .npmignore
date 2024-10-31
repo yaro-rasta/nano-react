@@ -1,0 +1,8 @@
+node_modules
+src
+public
+.vscode
+*.log
+*.test.js
+dist/
+tmp/
