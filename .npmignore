@@ -1,8 +1,12 @@
 node_modules
-src
 public
+src
+tmp/
 .vscode
 *.log
 *.test.js
-dist/
-tmp/
+eslint.config.js
+index.html
+llm.txt
+publish.js
+vite.config.js
