@@ -2,15 +2,19 @@
 import { execSync } from 'node:child_process';
 import fs from 'node:fs';
 import { createRequire } from 'node:module';
+import supportsColor from 'supports-color'; // Import the library
 
 // Use createRequire to import package.json
 const require = createRequire(import.meta.url);
 const { version } = require('./package.json');
 
 // Color and symbol constants
-const GREEN = '\x1b[92m'; // Green Text
-const RED = '\x1b[91m'; // Red Text
-const RESET = '\x1b[0m'; // Reset to default
+const useColors = supportsColor.stdout;
+const GREEN = useColors ? '\x1b[92m' : ''; // Green Text
+const YELLOW = useColors ? '\x1b[93m' : ''; // Yellow Text
+const RED = useColors ? '\x1b[91m' : ''; // Red Text
+const RESET = useColors ? '\x1b[0m' : ''; // Reset to default
+
 const OK = '✓';
 const FAIL = '×';
 
