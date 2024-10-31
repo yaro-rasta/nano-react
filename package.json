@@ -22,7 +22,8 @@
 		"build": "vite build",
 		"lint": "eslint .",
 		"preview": "vite preview",
-		"publish": "node publish.js"
+		"publish": "node publish.js",
+		"test": "echo -e\"Nothing to test yet\""
 	},
 	"dependencies": {
 		"react": "^18.3.1",
