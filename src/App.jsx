@@ -1,5 +1,6 @@
 import reactLogo from '/react.svg'
 import viteLogo from '/vite.svg'
+import nanoLogo from './assets/nano.svg'
 import { useSSState, useLSState, useIDbState } from '.'
 import './App.css'
 
@@ -11,6 +12,9 @@ function App() {
 	return (
 		<>
 			<div>
+				<a href="https://gitlab.com/nan.web/" target="_blank">
+					<img src={nanoLogo} className="logo" alt="Nano logo" />
+				</a>
 				<a href="https://vite.dev" target="_blank">
 					<img src={viteLogo} className="logo" alt="Vite logo" />
 				</a>
@@ -18,7 +22,7 @@ function App() {
 					<img src={reactLogo} className="logo react" alt="React logo" />
 				</a>
 			</div>
-			<h1>Vite + React</h1>
+			<h1>nan•web + Vite + React</h1>
 			<div className="card">
 				<div style={{ display: 'flex', gap: '1rem' }}>
 					<button onClick={() => setCount((count) => count + 1)}>
@@ -36,6 +40,11 @@ function App() {
 				<p>
 					Edit <code>src/App.jsx</code> and save to test HMR
 				</p>
+			</div>
+			<div className=''>
+				{/* @todo render a playground with the components, but better already a documentation with the examples */}
+				{/* components: Editable, EditableAmount, EditableNumber, EditableSelect, EditableString, EditableText, EditableTime, EditableDate, EditableDateTime, EditableFile, EditableImage */}
+				<a href=''></a>
 			</div>
 			<p className="read-the-docs">
 				Click on the Vite and React logos to learn more

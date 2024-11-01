@@ -73,17 +73,6 @@ const setDbValue = async (dbName, storeName, key, value) => {
 	});
 };
 
-/**
- * Custom React hook that persists state in IndexedDB.
- *
- * @param {string} key - A unique key to identify the state in IndexedDB.
- * @param {any} defaultValue - The default value for the state.
- * @param {string} [dbName='userDatabase'] - The name of the IndexedDB database where the state will be stored. If not provided, defaults to 'userDatabase'.
- * @param {string} [storeName='userData'] - The name of the object store within the database where the state will be stored. If not provided, defaults to 'userData'.
- * @return {[any, function]} - An array with two elements:
- *    - The current state value.
- *    - A setter function to update the state. This function has the same API as the setter returned by useState.
- */
 const useDBState = (key, defaultValue, dbOpts = { name: 'db', store: 'store' }) => {
 	const [value, setValue] = useState(defaultValue);
 	const didInit = useRef(false);

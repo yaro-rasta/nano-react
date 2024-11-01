@@ -11,7 +11,6 @@ const { version } = require('./package.json');
 // Color and symbol constants
 const useColors = supportsColor.stdout;
 const GREEN = useColors ? '\x1b[92m' : ''; // Green Text
-const YELLOW = useColors ? '\x1b[93m' : ''; // Yellow Text
 const RED = useColors ? '\x1b[91m' : ''; // Red Text
 const RESET = useColors ? '\x1b[0m' : ''; // Reset to default
 
