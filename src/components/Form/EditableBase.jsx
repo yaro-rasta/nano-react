@@ -1,33 +1,11 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Form, InputGroup } from 'react-bootstrap';
-import { handleKeyPress } from './utils';
+import { useState, useRef, useEffect } from 'react'
+import PropTypes from 'prop-types'
+import { handleKeyPress } from './utils'
 
-/**
- * A React component that provides an editable input or a view mode based on the current state.
- * The component can toggle between 'view' and 'edit' modes, with support for custom view and edit components.
- *
- * @component
- * @param {Object} props - The props object.
- * @param {string|number} props.value - The initial value of the component.
- * @param {function} props.onChange - Callback function called when the value changes.
- * @param {string} [props.mode='view'] - Initial mode of the component, either 'view' or 'edit'.
- * @param {string} props.name - The name attribute for the input element.
- * @param {string} props.id - The id attribute for the input element.
- * @param {string} props.label - Label text to display alongside the input.
- * @param {boolean} [props.labelInView=true] - Whether to display the label in view mode.
- * @param {boolean} [props.labelInEdit=true] - Whether to display the label in edit mode.
- * @param {string} [props.size=''] - The size of the input element (Bootstrap form control size).
- * @param {number} [props.tabIndex=0] - Tab index for the input group.
- * @param {React.ComponentType} [props.editComponent] - Custom component to use in edit mode.
- * @param {React.ComponentType} [props.viewComponent] - Custom component to use in view mode.
- * @param {...Object} rest - Additional props to pass to the input components.
- *
- * @returns {JSX.Element} The rendered component.
- */
 const EditableBase = ({
 	value,
-	onChange = v => undefined,
-	onInput = v => undefined,
+	onChange = () => undefined,
+	onInput = () => undefined,
 	mode = 'view',
 	name,
 	id,
@@ -40,80 +18,73 @@ const EditableBase = ({
 	viewComponent: ViewComponent,
 	...rest
 }) => {
-	const [editMode, setEditMode] = useState(mode);
-	const [isolated, setIsolated] = useState(value);
-	const viewRef = useRef(null);
-	const inputRef = useRef(null);
+	const [editMode, setEditMode] = useState(mode)
+	const [isolated, setIsolated] = useState(value)
+	// @todo fix the refs, they don't really work, so find another way to use an Editable components with the tab index but without references. When user uses tab to navigate through components and click Enter edit mode must be switched to and input element must be focused.
+	const viewRef = useRef(null)
+	const inputRef = useRef(null)
 
 	useEffect(() => {
-		// Ensure the input gets focus when entering edit mode
 		if (editMode === 'edit' && inputRef.current) {
-			inputRef.current.focus();
+			inputRef.current.focus()
 		}
-	}, [editMode]);
-	useEffect(() => {
-		console.debug('value', value);
-	}, [value]);
+	}, [editMode])
 
 	const handleViewClick = (e) => {
-		e.preventDefault();
-		e.stopPropagation();
-		if (editMode === 'view') setEditMode('edit');
+		e.preventDefault()
+		e.stopPropagation()
+		if (editMode === 'view') setEditMode('edit')
 	};
 
 	const handleBlur = () => {
-		setEditMode('view');
-		viewRef.current?.focus();
+		setEditMode('view')
+		viewRef.current?.focus()
 	};
 
-	const handleInput = e => {
+	const handleInput = (e) => {
 		if (e && e.target && typeof e.target.value !== 'undefined') {
-			setIsolated(e.target.value);
-			onInput(e.target.value);
+			setIsolated(e.target.value)
+			onInput(e.target.value)
 		} else if (typeof e === 'string' || typeof e === 'number') {
-			// In case `handleChange` is called directly with a value (for custom components)
-			setIsolated(e);
-			onInput(e);
+			setIsolated(e)
+			onInput(e)
 		}
 	};
 
-	const handleCancel = e => {
-		setEditMode('view');
+	const handleCancel = () => {
+		setEditMode('view')
 	};
 
-	const handleChange = e => {
-		setEditMode('view');
+	const handleChange = (e) => {
+		setEditMode('view')
 		if (e && e.target && typeof e.target.value !== 'undefined') {
-			onChange(e.target.value);
+			onChange(e.target.value)
 		} else {
-			onChange(e);
+			onChange(e)
 		}
 	};
 
-	/**
-	 * view === mode
-	 *   Enter || Space => mode => edit
-	 * edit === mode
-	 *   Escape => mode => view & value => initalValue
-	 *   Enter => mode => view & value => value
-	 */
 	const handleEditKeyDown = (e) => {
-		if ('edit' === editMode) {
-			handleKeyPress(e, ['Escape'], handleCancel, { stop: true });
-			handleKeyPress(e, ['Enter'], handleChange, { stop: true });
+		if (editMode === 'edit') {
+			handleKeyPress(e, ['Escape'], handleCancel, { stop: true })
+			handleKeyPress(e, ['Enter'], handleChange, { stop: true })
 		} else {
-			handleKeyPress(e, ['Enter', ' ', 'Space'], handleViewClick, { stop: true });
+			handleKeyPress(e, ['Enter', ' ', 'Space'], handleViewClick, { stop: true })
 		}
 	};
 
 	return (
-		<InputGroup tabIndex={tabIndex} onKeyDown={handleEditKeyDown}>
+		<div
+			className={`flex items-center ${size === 'lg' ? 'text-lg' : size === 'sm' ? 'text-sm' : ''}`}
+			tabIndex={tabIndex}
+			onKeyDown={handleEditKeyDown}
+		>
 			{editMode === 'edit' ? (
 				EditComponent ? (
 					<EditComponent
 						id={id}
 						name={name}
-						ref={inputRef} // Ensure the ref is applied to the edit component
+						ref={inputRef}
 						value={isolated}
 						label={label}
 						labelInEdit={labelInEdit}
@@ -125,12 +96,12 @@ const EditableBase = ({
 					/>
 				) : (
 					<>
-						<Form.Control
+						<input
 							id={id}
 							name={name}
-							ref={inputRef} // Ensure the ref is applied to the input
+							ref={inputRef}
 							type="text"
-							size={size}
+							className="border rounded p-2 w-full"
 							value={isolated}
 							onInput={handleInput}
 							onChange={handleChange}
@@ -138,8 +109,9 @@ const EditableBase = ({
 							autoFocus
 							{...rest}
 						/>
-						{labelInEdit && 'undefined' !== typeof label && 
-							<InputGroup.Text>{label}</InputGroup.Text>}
+						{labelInEdit && label && (
+							<span className="ml-2 text-gray-700">{label}</span>
+						)}
 					</>
 				)
 			) : (
@@ -156,14 +128,14 @@ const EditableBase = ({
 					/>
 				) : (
 					<>
-						{labelInView && 'undefined' !== typeof label && 
-							<InputGroup.Text>{label}</InputGroup.Text>}
-						<Form.Control
-							// plaintext
+						{labelInView && label && (
+							<span className="mr-2 text-gray-700">{label}</span>
+						)}
+						<input
 							readOnly
 							id={id}
 							name={name}
-							size={size}
+							className="bg-transparent border-none cursor-pointer text-gray-900"
 							value={isolated}
 							onClick={handleViewClick}
 							ref={viewRef}
@@ -172,8 +144,24 @@ const EditableBase = ({
 					</>
 				)
 			)}
-		</InputGroup>
+		</div>
 	);
 };
 
-export default EditableBase;
+EditableBase.propTypes = {
+	id: PropTypes.string,
+	name: PropTypes.string.isRequired,
+	value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+	onChange: PropTypes.func,
+	onInput: PropTypes.func,
+	mode: PropTypes.oneOf(['view', 'edit']),
+	label: PropTypes.string,
+	labelInView: PropTypes.bool,
+	labelInEdit: PropTypes.bool,
+	size: PropTypes.string,
+	tabIndex: PropTypes.number,
+	editComponent: PropTypes.elementType,
+	viewComponent: PropTypes.elementType,
+}
+
+export default EditableBase
