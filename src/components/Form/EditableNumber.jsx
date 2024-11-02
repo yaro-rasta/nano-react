@@ -1,5 +1,3 @@
-import React from "react";
-
 const EditableNumber = ({ value, onChange }) => {
   return (
     <select defaultValue={value} onChange={(e) => onChange(e.target.value)}>

@@ -1,14 +1,14 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import Editable from "./Editable";
 
 const EditableAmount = ({ currency, currenciesList, onChange }) => {
-  // Отримуємо значення з localStorage або використовуємо значення за замовчуванням
+  
   const [amount, setAmount] = useState(() => {
     const savedAmount = localStorage.getItem("amount");
-    return savedAmount ? Number(savedAmount) : 0; // Встановлюємо значення за замовчуванням
+    return savedAmount ? Number(savedAmount) : 0; 
   });
 
-  // Зберігаємо amount у localStorage при зміні
+  /
   useEffect(() => {
     localStorage.setItem("amount", amount);
   }, [amount]);
