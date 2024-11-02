@@ -1,14 +1,14 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { useAppContext } from '../../context/AppContext';
+import { Link } from 'react-router-dom'
+import PropTypes from 'prop-types'
+import { AppProvider } from '../../context/AppContext'
 
 const DocsLayout = ({ children }) => {
-	const { language, setLanguage, t, languagesList } = useAppContext();
+	const { language, setLanguage, t, languagesList } = AppProvider.useAppContext()
 
 	// List of documentation routes with paths that include the language code
 	const docsNav = [
 		{ path: `/docs/${language}/dev/state`, label: 'State' },
-	];
+	]
 
 	return (
 		<div className="docs-container">
@@ -49,7 +49,11 @@ const DocsLayout = ({ children }) => {
 				{children}
 			</main>
 		</div>
-	);
-};
+	)
+}
 
-export default DocsLayout;
+DocsLayout.propTypes = {
+	children: PropTypes.node,
+}
+
+export default DocsLayout

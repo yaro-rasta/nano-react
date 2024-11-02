@@ -1,11 +1,12 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import PropTypes from 'prop-types'
 import { handleKeyPress } from './utils'
 
 const EditableBase = ({
 	value,
-	onChange = () => undefined,
-	onInput = () => undefined,
+	onChange = () => true,
+	onInput = () => true,
+	onCancel = () => true,
 	mode = 'view',
 	name,
 	id,
@@ -16,82 +17,105 @@ const EditableBase = ({
 	tabIndex = 0,
 	editComponent: EditComponent,
 	viewComponent: ViewComponent,
+	config = { revertOnEscape: true, clickOutsideToSave: true },
 	...rest
 }) => {
 	const [editMode, setEditMode] = useState(mode)
 	const [isolated, setIsolated] = useState(value)
-	// @todo fix the refs, they don't really work, so find another way to use an Editable components with the tab index but without references. When user uses tab to navigate through components and click Enter edit mode must be switched to and input element must be focused.
-	const viewRef = useRef(null)
+	const originalValue = useRef(value) // Keep track of the original value
+	const containerRef = useRef(null)
 	const inputRef = useRef(null)
 
+	// Focus the input element when entering edit mode
 	useEffect(() => {
-		if (editMode === 'edit' && inputRef.current) {
-			inputRef.current.focus()
+		if (editMode === 'edit' && id) {
+			const inputElement = document.getElementById(id)
+			if (inputElement) {
+				inputElement.focus()
+			}
 		}
-	}, [editMode])
+	}, [editMode, id])
+
+	// Handle click outside to switch to view mode
+	useEffect(() => {
+		if (config.clickOutsideToSave) {
+			const handleClickOutside = (event) => {
+				if (containerRef.current && !containerRef.current.contains(event.target)) {
+					if (config.clickOutsideToSave) {
+						handleChange(isolated)
+					} else {
+						console.debug('go back to view mode')
+						setEditMode('view')
+					}
+				}
+			}
+
+			document.addEventListener('mousedown', handleClickOutside)
+			document.addEventListener('touchstart', handleClickOutside)
+
+			return () => {
+				document.removeEventListener('mousedown', handleClickOutside)
+				document.removeEventListener('touchstart', handleClickOutside)
+			}
+		}
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [config.clickOutsideToSave])
+
+	const handleCancel = () => {
+		setIsolated(originalValue.current)
+		onCancel(originalValue.current)
+		console.debug('cancel: go back to view mode')
+		setEditMode('view')
+	}
+
+	const handleChange = (e) => {
+		const newValue = e?.target?.value ?? e
+		onChange(newValue)
+		console.debug('change', newValue)
+		setEditMode('view')
+	}
+
+	const handleInput = (e) => {
+		const newValue = e?.target?.value ?? e
+		setIsolated(newValue)
+		onInput(newValue)
+	}
 
 	const handleViewClick = (e) => {
 		e.preventDefault()
 		e.stopPropagation()
-		if (editMode === 'view') setEditMode('edit')
-	};
-
-	const handleBlur = () => {
-		setEditMode('view')
-		viewRef.current?.focus()
-	};
-
-	const handleInput = (e) => {
-		if (e && e.target && typeof e.target.value !== 'undefined') {
-			setIsolated(e.target.value)
-			onInput(e.target.value)
-		} else if (typeof e === 'string' || typeof e === 'number') {
-			setIsolated(e)
-			onInput(e)
+		if (editMode === 'view') {
+			originalValue.current = isolated // Save the original value before editing
+			setEditMode('edit')
 		}
-	};
-
-	const handleCancel = () => {
-		setEditMode('view')
-	};
-
-	const handleChange = (e) => {
-		setEditMode('view')
-		if (e && e.target && typeof e.target.value !== 'undefined') {
-			onChange(e.target.value)
-		} else {
-			onChange(e)
-		}
-	};
+	}
 
 	const handleEditKeyDown = (e) => {
 		if (editMode === 'edit') {
 			handleKeyPress(e, ['Escape'], handleCancel, { stop: true })
-			handleKeyPress(e, ['Enter'], handleChange, { stop: true })
+			handleKeyPress(e, ['Enter'], () => { handleChange(isolated) }, { stop: true })
 		} else {
 			handleKeyPress(e, ['Enter', ' ', 'Space'], handleViewClick, { stop: true })
 		}
-	};
+	}
 
 	return (
 		<div
-			className={`flex items-center ${size === 'lg' ? 'text-lg' : size === 'sm' ? 'text-sm' : ''}`}
+			className={`flex items-center border rounded ${size === 'lg' ? 'text-lg' : size === 'sm' ? 'text-sm' : ''}`}
 			tabIndex={tabIndex}
 			onKeyDown={handleEditKeyDown}
+			ref={containerRef}
 		>
 			{editMode === 'edit' ? (
 				EditComponent ? (
 					<EditComponent
 						id={id}
 						name={name}
-						ref={inputRef}
 						value={isolated}
 						label={label}
-						labelInEdit={labelInEdit}
+						showLabel={labelInEdit}
 						onInput={handleInput}
 						onChange={handleChange}
-						onBlur={handleBlur}
-						autoFocus
 						{...rest}
 					/>
 				) : (
@@ -99,18 +123,15 @@ const EditableBase = ({
 						<input
 							id={id}
 							name={name}
-							ref={inputRef}
 							type="text"
-							className="border rounded p-2 w-full"
+							className="p-2 w-full"
 							value={isolated}
 							onInput={handleInput}
-							onChange={handleChange}
-							onBlur={handleBlur}
-							autoFocus
+							ref={inputRef}
 							{...rest}
 						/>
 						{labelInEdit && label && (
-							<span className="ml-2 text-gray-700">{label}</span>
+							<span className="ml-2">{label}</span>
 						)}
 					</>
 				)
@@ -121,15 +142,14 @@ const EditableBase = ({
 						name={name}
 						value={isolated}
 						label={label}
-						labelInView={labelInView}
+						showLabel={labelInView}
 						onClick={handleViewClick}
-						ref={viewRef}
 						{...rest}
 					/>
 				) : (
 					<>
 						{labelInView && label && (
-							<span className="mr-2 text-gray-700">{label}</span>
+							<span className="mr-2">{label}</span>
 						)}
 						<input
 							readOnly
@@ -137,16 +157,14 @@ const EditableBase = ({
 							name={name}
 							className="bg-transparent border-none cursor-pointer text-gray-900"
 							value={isolated}
-							onClick={handleViewClick}
-							ref={viewRef}
 							tabIndex={-1}
 						/>
 					</>
 				)
 			)}
 		</div>
-	);
-};
+	)
+}
 
 EditableBase.propTypes = {
 	id: PropTypes.string,
@@ -154,6 +172,7 @@ EditableBase.propTypes = {
 	value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
 	onChange: PropTypes.func,
 	onInput: PropTypes.func,
+	onCancel: PropTypes.func,
 	mode: PropTypes.oneOf(['view', 'edit']),
 	label: PropTypes.string,
 	labelInView: PropTypes.bool,
@@ -162,6 +181,10 @@ EditableBase.propTypes = {
 	tabIndex: PropTypes.number,
 	editComponent: PropTypes.elementType,
 	viewComponent: PropTypes.elementType,
+	config: PropTypes.shape({
+		revertOnEscape: PropTypes.bool,
+		clickOutsideToSave: PropTypes.bool,
+	}),
 }
 
 export default EditableBase

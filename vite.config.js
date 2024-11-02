@@ -1,18 +1,10 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react-swc';
-import markdown from 'vite-plugin-md';
 
 // https://vitejs.dev/config/
 export default defineConfig({
 	plugins: [
 		react(),
-		markdown({
-			markdownItOptions: {
-				html: true,
-				linkify: true,
-				typographer: true,
-			},
-		})
 	],
 	resolve: {
 		extensions: ['.js', '.jsx', '.md'],
