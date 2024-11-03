@@ -1,4 +1,3 @@
-import { useState } from "react";
 import PropTypes from "prop-types";
 import EditableBase from "./EditableBase";
 
@@ -68,9 +67,12 @@ EditComponent.propTypes = {
   currencies: PropTypes.arrayOf(PropTypes.string).isRequired,
 };
 
-const EditableAmount = ({ currencies = ["$", "€", "UAH"], ...props }) => {
-  const [currency, setCurrency] = useState(props.currency || currencies[0]);
-
+const EditableAmount = ({
+  currencies = ["$", "€", "UAH"],
+  currency,
+  setCurrency,
+  ...props
+}) => {
   const handleCurrencyChange = (event) => {
     setCurrency(event.target.value);
   };

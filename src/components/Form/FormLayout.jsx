@@ -12,6 +12,7 @@ function FormLayout() {
   );
   const [numberValue, setNumberValue] = useLSState("numberValue", 0);
   const [amountValue, setAmountValue] = useLSState("amountValue", 0);
+  const [currency, setCurrency] = useLSState("currency", "UAH");
 
   return (
     <div className="flex flex-col gap-5">
@@ -35,7 +36,8 @@ function FormLayout() {
         label={t("Amount")}
         value={amountValue}
         onChange={setAmountValue}
-        currency="UAH"
+        currency={currency}
+        setCurrency={setCurrency}
       />
     </div>
   );
