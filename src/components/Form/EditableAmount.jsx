@@ -2,13 +2,11 @@ import { useState, useEffect } from "react";
 import Editable from "./Editable";
 
 const EditableAmount = ({ currency, currenciesList, onChange }) => {
-  
   const [amount, setAmount] = useState(() => {
     const savedAmount = localStorage.getItem("amount");
-    return savedAmount ? Number(savedAmount) : 0; 
+    return savedAmount ? Number(savedAmount) : 0;
   });
 
-  /
   useEffect(() => {
     localStorage.setItem("amount", amount);
   }, [amount]);
