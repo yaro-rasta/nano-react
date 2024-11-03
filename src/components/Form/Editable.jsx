@@ -1,13 +1,37 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
 
+/**
+ * Компонент Editable дозволяє переключатися між режимом перегляду та редагування значення.
+ *
+ * @component
+ * @param {Object} props - Об'єкт властивостей компонента.
+ * @param {string} props.value - Значення для відображення у режимі перегляду.
+ * @param {function} props.onChange - Функція, яка викликається при збереженні нового значення.
+ * @param {React.ReactNode} props.children - Елементи, які будуть відображатися у режимі редагування.
+ *
+ * @example
+ * return (
+ *   <Editable value="100 USD" onChange={(newValue) => console.log(newValue)}>
+ *     <input type="text" />
+ *   </Editable>
+ * )
+ *
+ * @returns {JSX.Element} Рендерить значення або елементи редагування на основі режиму.
+ */
 const Editable = ({ value, onChange, children }) => {
   const [isEditing, setEditing] = useState(false);
 
+  /**
+   * Перемикає компонент у режим редагування.
+   */
   const handleEdit = () => {
     setEditing(true);
   };
 
+  /**
+   * Зберігає нове значення та повертається до режиму перегляду.
+   */
   const handleSave = () => {
     setEditing(false);
     if (onChange) {
