@@ -4,6 +4,7 @@ import Editable from "./Editable";
 /**
  * Компонент EditableAmount дозволяє редагувати суму та вибрати валюту з наданого списку.
  * Зберігає значення суми в localStorage, що дозволяє відновити значення після перезавантаження сторінки.
+ * @todo описати покроково як має працювати компонент.
  *
  * @component
  * @param {Object} props - Об'єкт властивостей компонента.
@@ -20,6 +21,7 @@ import Editable from "./Editable";
  */
 const EditableAmount = ({ currency, currenciesList, onSave }) => {
   // Ініціалізуємо стан із значення з localStorage або встановлюємо за замовчуванням 0
+//   @todo для зберігання даних у localStorage використовується useLSState()
   const [amount, setAmount] = useState(() => {
     const savedAmount = localStorage.getItem("amount");
     return savedAmount ? Number(savedAmount) : 0;
@@ -54,5 +56,7 @@ const EditableAmount = ({ currency, currenciesList, onSave }) => {
     </Editable>
   );
 };
+
+// @todo додати propTypes.
 
 export default EditableAmount;

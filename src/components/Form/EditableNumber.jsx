@@ -1,5 +1,6 @@
 /**
  * Компонент EditableNumber дозволяє користувачеві вибрати валюту зі списку.
+ * @todo описати покроково як має працювати компонент.
  *
  * @component
  * @param {Object} props - Об'єкт властивостей компонента.
@@ -13,6 +14,8 @@
  *
  * @returns {JSX.Element} Рендерить випадаючий список для вибору валюти.
  */
+// @todo використовувати через базовий компонет, це або число, або називається EditableSelect
+// optionsList має передавитись через props.
 const EditableNumber = ({ value, onChange }) => {
   return (
     <select defaultValue={value} onChange={(e) => onChange(e.target.value)}>
@@ -22,5 +25,7 @@ const EditableNumber = ({ value, onChange }) => {
     </select>
   );
 };
+
+// @todo додати propTypes.
 
 export default EditableNumber;

@@ -3,6 +3,10 @@ import PropTypes from "prop-types";
 
 /**
  * Компонент Editable дозволяє переключатися між режимом перегляду та редагування значення.
+ * @todo описати у документації усі onInput, onChange, onCancel.
+ * @todo описати покроково як має працювати компонент.
+ * @todo переходимо на TAB замість пробілів у коді.
+ * @todo додати горячі клавіши ESCAPE, ENTER.
  *
  * @component
  * @param {Object} props - Об'єкт властивостей компонента.
@@ -44,7 +48,8 @@ const Editable = ({ value, onChange, children }) => {
       {isEditing ? (
         <div>
           {children}
-          <button onClick={handleSave}>Зберегти</button>
+		  {/* @todo всі надписи мають використовувати трансляцію t = v => v */}
+          <button onClick={handleSave}>{t('Зберегти')}</button>
         </div>
       ) : (
         <div onClick={handleEdit}>{value}</div>
