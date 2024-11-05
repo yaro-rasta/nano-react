@@ -7,6 +7,7 @@
  */
 
 /**
+ * @comment #dev/editable.md
  * # Компонент EditableString
  *
  * Компонент EditableString дозволяє редагувати текстове значення. Він використовує

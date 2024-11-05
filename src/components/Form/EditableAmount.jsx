@@ -184,6 +184,7 @@ EditComponent.propTypes = {
 };
 
 const EditableAmount = ({
+	// @todo використовувати стандарт https://en.wikipedia.org/wiki/ISO_4217 { code: "UAH", char: "₴", title: "Гривня" }
   currencies = ["$", "€", "UAH"],
   currency,
   setCurrency,

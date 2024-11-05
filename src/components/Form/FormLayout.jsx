@@ -180,7 +180,7 @@ import { useLSState } from "../..";
 import { AppProvider } from "../../context/AppContext";
 import EditableString from "./EditableString";
 import EditableNumber from "./EditableNumber";
-import EditableAmount from "./EditableAmount ";
+import EditableAmount from "./EditableAmount";
 
 function FormLayout() {
   const { t } = AppProvider.useAppContext();
