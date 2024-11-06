@@ -15,7 +15,6 @@ createRoot(document.getElementById('root')).render(
 				<Routes>
 					<Route path="/" element={<App />} />
 					<Route path="/form" element={<FormLayout />} />
-					{/* Language-specific documentation routes */}
 					<Route path="/:language/docs/*" element={<DocsLayout />}>
 						<Route path="dev/state" element={<MarkdownRenderer fileName="dev/state.md" />} />
 					</Route>

@@ -99,59 +99,59 @@ import EditableBase from "./EditableBase";
 import PropTypes from "prop-types";
 
 const ViewComponent = ({ value, label, showLabel, onClick }) => (
-  <div className="flex items-center" onClick={onClick}>
-    {showLabel && label && <label className="mr-2">{label}</label>}
-    <span>{value}</span>
-  </div>
+	<div className="flex items-center" onClick={onClick}>
+		{showLabel && label && <label className="mr-2">{label}</label>}
+		<span>{value}</span>
+	</div>
 );
 
 ViewComponent.propTypes = {
-  value: PropTypes.string.isRequired,
-  label: PropTypes.string,
-  showLabel: PropTypes.bool,
-  onClick: PropTypes.func,
+	value: PropTypes.string.isRequired,
+	label: PropTypes.string,
+	showLabel: PropTypes.bool,
+	onClick: PropTypes.func,
 };
 
 const EditComponent = ({ id, name, value, label, showLabel, onInput }) => (
-  <div className="flex items-center">
-    {showLabel && label && (
-      <label htmlFor={id} className="mr-2">
-        {label}
-      </label>
-    )}
-    <input
-      type="text"
-      id={id}
-      name={name}
-      value={value}
-      className="border rounded p-2 w-full"
-      onInput={onInput}
-    />
-  </div>
+	<div className="flex items-center">
+		{showLabel && label && (
+			<label htmlFor={id} className="mr-2">
+				{label}
+			</label>
+		)}
+		<input
+			type="text"
+			id={id}
+			name={name}
+			value={value}
+			className="border rounded p-2 w-full"
+			onInput={onInput}
+		/>
+	</div>
 );
 
 EditComponent.propTypes = {
-  id: PropTypes.string.isRequired,
-  name: PropTypes.string.isRequired,
-  value: PropTypes.string.isRequired,
-  label: PropTypes.string,
-  showLabel: PropTypes.bool,
-  onInput: PropTypes.func.isRequired,
+	id: PropTypes.string.isRequired,
+	name: PropTypes.string.isRequired,
+	value: PropTypes.string.isRequired,
+	label: PropTypes.string,
+	showLabel: PropTypes.bool,
+	onInput: PropTypes.func.isRequired,
 };
 
 const EditableString = (props) => (
-  <EditableBase
-    {...props}
-    viewComponent={ViewComponent}
-    editComponent={EditComponent}
-  />
+	<EditableBase
+		{...props}
+		viewComponent={ViewComponent}
+		editComponent={EditComponent}
+	/>
 );
 
 EditableString.displayName = "EditableString";
 
 EditableString.propTypes = {
-  ...EditableBase.propTypes,
-  value: PropTypes.string.isRequired,
+	...EditableBase.propTypes,
+	value: PropTypes.string.isRequired,
 };
 
 export default EditableString;
