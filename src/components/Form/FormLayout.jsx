@@ -1,179 +1,122 @@
 /**
- * @comment #dev/editable.md
- * @todo напиши документацію українською мовою яка описує як користуватись компонентом, всі його функції та можливості
- * покроково і всі змінні які передаються та повертаються.
- * @todo напиши сюди md документацію українською мовою у js коментарі а також допиши jsdoc для змінних і результату.
- * @todo також додай та опиши сюди до документації lifeCycle компонента так щоб було легко покроково тестувати (перевірити) роботу компонента.
- */
-
-/**
- * # FormLayout Компонент
+ *  @comment #dev/editable.md
+ * 
+ * # Компонент EditableAmount
  *
- * Цей компонент використовує декілька редагованих полів, які зберігаються в локальному сховищі браузера.
- * Компонент дозволяє користувачеві змінювати текстові значення, числові значення та суми з валютою.
+ * Компонент EditableAmount дозволяє редагувати числове значення з вибором валюти.
+ * Він використовує компоненти ViewComponent та EditComponent для перегляду та редагування значення.
  *
  * ## Використання
  *
- * 1. Імпортуйте потрібні компоненти:
- * ```jsx
- * import { useLSState } from "../..";
- * import { AppProvider } from "../../context/AppContext";
- * import EditableString from "./EditableString";
- * import EditableNumber from "./EditableNumber";
- * import EditableAmount from "./EditableAmount";
- * ```
+ * Для використання компонента імпортуйте його у вашому файлі:
+ * 
+jsx
+ * import EditableAmount from './EditableAmount';
  *
- * 2. Використовуйте компонент у вашому додатку:
- * ```jsx
- * function FormLayout() {
- *   const { t } = AppProvider.useAppContext();
- *   const [textOneLine, setTextOneLine] = useLSState("textOneLine", "Text in one line");
- *   const [numberValue, setNumberValue] = useLSState("numberValue", 0);
- *   const [amountValue, setAmountValue] = useLSState("amountValue", 0);
- *   const [currency, setCurrency] = useLSState("currency", "UAH");
+
  *
- *   return (
- *     <div className="flex flex-col gap-5">
- *       <EditableString
- *         id="textOneLine"
- *         name="textOneLine"
- *         label={t("Name")}
- *         value={textOneLine}
- *         onChange={setTextOneLine}
- *       />
- *       <EditableNumber
- *         id="numberValue"
- *         name="numberValue"
- *         label={t("Number")}
- *         value={numberValue}
- *         onChange={setNumberValue}
- *       />
- *       <EditableAmount
- *         id="amountValue"
- *         name="amountValue"
- *         label={t("Amount")}
- *         value={amountValue}
- *         onChange={setAmountValue}
- *         currency={currency}
- *         setCurrency={setCurrency}
- *       />
- *     </div>
- *   );
- * }
- * ```
+ * Далі, використайте компонент у вашому додатку:
+ * 
+jsx
+ * <EditableAmount
+ *   value={amount}
+ *   onChange={yourChangeHandler}
+ *   name="amount"
+ *   id="amountId"
+ *   label="Сума"
+ *   currency={selectedCurrency}
+ *   setCurrency={setSelectedCurrency}
+ * />
  *
- * ## Пропси компонентів
+
  *
- * ### EditableString
- * - `id` (string): Ідентифікатор для елемента.
- * - `name` (string): Ім'я для елемента.
- * - `label` (string): Текст мітки, що відображається поруч з елементом.
- * - `value` (string): Початкове значення для елемента.
- * - `onChange` (function): Функція, яка викликається при зміні значення.
+ * ## Пропси компонента
  *
- * ### EditableNumber
- * - `id` (string): Ідентифікатор для елемента.
- * - `name` (string): Ім'я для елемента.
- * - `label` (string): Текст мітки, що відображається поруч з елементом.
- * - `value` (number): Початкове значення для елемента.
- * - `onChange` (function): Функція, яка викликається при зміні значення.
+ * - value (string | number): Початкове значення для поля вводу. **Обов'язковий параметр.**
+ * - onChange (function): Функція, яка викликається при зміні значення.
+ * - name (string): Ім'я для поля вводу. **Обов'язковий параметр.**
+ * - id (string): Ідентифікатор для поля вводу. **Обов'язковий параметр.**
+ * - label (string): Текст мітки, що відображається поруч з полем вводу.
+ * - currency (string): Вибрана валюта, що відображається поряд з числовим значенням. **Обов'язковий параметр.**
+ * - setCurrency (function): Функція для оновлення валюти.
+ * - currencies (array): Масив доступних валют для вибору (за замовчуванням ["$", "€", "UAH"]).
  *
- * ### EditableAmount
- * - `id` (string): Ідентифікатор для елемента.
- * - `name` (string): Ім'я для елемента.
- * - `label` (string): Текст мітки, що відображається поруч з елементом.
- * - `value` (number): Початкове значення для елемента.
- * - `onChange` (function): Функція, яка викликається при зміні значення.
- * - `currency` (string): Поточна валюта.
- * - `setCurrency` (function): Функція для зміни валюти.
+ * ## Життєвий цикл компонента
  *
- *  * ## Життєвий цикл компонента
+ * 1. **Ініціалізація:** Компонент EditableAmount отримує значення та функцію для зміни валюти через пропси.
  *
- * Компонент FormLayout проходить через кілька етапів під час свого життєвого циклу:
+ * 2. **Рендеринг:**
+ *   - У режимі перегляду (ViewComponent): Відображає числове значення з валютою та міткою, якщо showLabel є true.
+ *   - У режимі редагування (EditComponent): Відображає поле вводу для числа та випадаючий список для вибору валюти.
  *
- * 1. **Ініціалізація стану:** Компонент використовує хук `useLSState` для ініціалізації значень з локального сховища або встановлення їх за замовчуванням. Використовуються такі змінні стану:
- *    - `textOneLine` (string): Значення текстового поля.
- *    - `numberValue` (number): Значення числового поля.
- *    - `amountValue` (number): Значення поля суми.
- *    - `currency` (string): Вибрана валюта.
+ * 3. **Оновлення:**
+ *   - При зміні значення в полі вводу, викликається функція onInput, що оновлює значення в батьківському компоненті.
+ *   - При виборі нової валюти, викликається функція onCurrencyChange, що оновлює валюту в стані батьківського компонента.
  *
- * 2. **Рендеринг:** Компонент відображає три редаговані поля (EditableString, EditableNumber, EditableAmount), кожне з яких має свої пропси для значень та функцій зміни значень.
+ * ## Тестування життєвого циклу компонента
  *
- * 3. **Оновлення:** При зміні значень в полях, компонент автоматично оновлює стан і зберігає нові значення в локальному сховищі.
+ * Щоб протестувати життєвий цикл компонента, ви можете виконати наступні кроки:
  *
- * ## Тестування компонента
- *
- * Для тестування компонента можна використовувати такі підходи:
- *
- * ### 1. Монтуючий тест:
- * Перевірте, чи компонент правильно монтується без помилок.
- *
- * ```jsx
+ * ### 1. Тест на рендеринг:
+ * Переконайтеся, що компонент рендериться без помилок.
+ * 
+jsx
  * import { render } from '@testing-library/react';
- * import FormLayout from './FormLayout';
+ * import EditableAmount from './EditableAmount';
  *
- * test('компонент монтується без помилок', () => {
- *   render(<FormLayout />);
+ * test('компонент рендериться без помилок', () => {
+ *   render(<EditableAmount value={0} onChange={() => {}} name="amount" id="amountId" currency="UAH" setCurrency={() => {}} />);
  * });
- * ```
  *
- * ### 2. Тестування початкового стану:
- * Переконайтеся, що початковий стан компонентів (текстового поля, числового поля та суми) відповідає очікуваному.
+
  *
- * ```jsx
+ * ### 2. Тест на початковий стан:
+ * Перевірте, чи правильно відображається початкове значення та валюта.
+ * 
+jsx
  * import { render, screen } from '@testing-library/react';
- * import FormLayout from './FormLayout';
+ * import EditableAmount from './EditableAmount';
  *
- * test('перевірка початкового стану компонентів', () => {
- *   render(<FormLayout />);
- *   const textField = screen.getByLabelText(/Name/i);
- *   const numberField = screen.getByLabelText(/Number/i);
- *   const amountField = screen.getByLabelText(/Amount/i);
- *
- *   expect(textField.value).toBe('Text in one line');
- *   expect(numberField.value).toBe('0');
- *   expect(amountField.value).toBe('0');
+ * test('перевірка початкового значення і валюти', () => {
+ *   render(<EditableAmount value={100} onChange={() => {}} name="amount" id="amountId" currency="UAH" setCurrency={() => {}} />);
+ *   expect(screen.getByText('100 UAH')).toBeInTheDocument();
  * });
- * ```
  *
- * ### 3. Тестування подій:
- * Симулюйте зміну значень в полях та перевірте, чи стан компонентів оновлюється належним чином.
+
  *
- * ```jsx
+ * ### 3. Тест на зміну значення:
+ * Симулюйте зміну значення та перевірте, чи викликається onChange.
+ * 
+jsx
  * import { render, screen, fireEvent } from '@testing-library/react';
- * import FormLayout from './FormLayout';
+ * import EditableAmount from './EditableAmount';
  *
- * test('перевірка оновлення значень', () => {
- *   render(<FormLayout />);
- *   const textField = screen.getByLabelText(/Name/i);
- *   const numberField = screen.getByLabelText(/Number/i);
- *   const amountField = screen.getByLabelText(/Amount/i);
+ * test('перевірка зміни значення', () => {
+ *   const handleChange = jest.fn();
+ *   render(<EditableAmount value={100} onChange={handleChange} name="amount" id="amountId" currency="UAH" setCurrency={() => {}} />);
  *
- *   fireEvent.change(textField, { target: { value: 'New text' } });
- *   fireEvent.change(numberField, { target: { value: '123' } });
- *   fireEvent.change(amountField, { target: { value: '456' } });
- *
- *   expect(textField.value).toBe('New text');
- *   expect(numberField.value).toBe('123');
- *   expect(amountField.value).toBe('456');
+ *   const input = screen.getByRole('spinbutton'); // Оскільки це поле для введення числа
+ *   fireEvent.change(input, { target: { value: '150' } });
+ *   expect(handleChange).toHaveBeenCalledWith('150'); // Перевірте, чи викликано onChange з новим значенням
  * });
- * ```
  *
- * ### 4. Тестування зміни валюти:
- * Перевірте, чи компонент коректно обробляє зміну валюти.
+
  *
- * ```jsx
+ * ### 4. Тест на зміну валюти:
+ * Перевірте, чи валюта змінюється при виборі з випадаючого списку.
+ * 
+jsx
  * import { render, screen, fireEvent } from '@testing-library/react';
- * import FormLayout from './FormLayout';
+ * import EditableAmount from './EditableAmount';
  *
  * test('перевірка зміни валюти', () => {
- *   render(<FormLayout />);
- *   const currencyField = screen.getByLabelText(/Currency/i);
- *   fireEvent.change(currencyField, { target: { value: 'USD' } });
- *   expect(currencyField.value).toBe('USD');
- * });
- * ```
+ *   const setCurrency = jest.fn();
+ *   render(<EditableAmount value={100} onChange={() => {}} name="amount" id="amountId" currency="UAH" setCurrency={setCurrency} />);
  *
+ *   const select = screen.getByRole('combobox');
+ *   fireEvent.change(select, { target: { value: '€' } });
+ *   expect(setCurrency).toHaveBeenCalledWith('€'); // Перевірте, чи викликано setCurrency з новою валютою
+ * });
  */
 
 import { useLSState } from "../..";
@@ -190,7 +133,11 @@ function FormLayout() {
   );
   const [numberValue, setNumberValue] = useLSState("numberValue", 0);
   const [amountValue, setAmountValue] = useLSState("amountValue", 0);
-  const [currency, setCurrency] = useLSState("currency", "UAH");
+  const [currency, setCurrency] = useLSState("currency", {
+    code: "USD",
+    char: "$",
+    title: "Dollar",
+  });
 
   return (
     <div className="flex flex-col gap-5">
