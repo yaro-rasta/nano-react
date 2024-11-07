@@ -1,113 +1,102 @@
-import { useEffect, useState, useRef } from 'react';
+// IndexedDB.jsx
+import { useEffect, useState } from "react";
 
-const subscriptions = new Map();
-
-const subscribe = (key, callback) => {
-	if (!subscriptions.has(key)) {
-		subscriptions.set(key, []);
-	}
-	subscriptions.get(key).push(callback);
-};
-
-const notify = (key, value) => {
-	if (subscriptions.has(key)) {
-		for (const callback of subscriptions.get(key)) {
-			callback(value);
-		}
-	}
-};
-
+// Відкриття IndexedDB
 const getDbInstance = (dbName, storeName) => {
-	return new Promise((resolve, reject) => {
-		const request = indexedDB.open(dbName, 1);
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open(dbName, 1);
 
-		request.onupgradeneeded = (event) => {
-			const db = event.target.result;
-			if (!db.objectStoreNames.contains(storeName)) {
-				db.createObjectStore(storeName, { keyPath: 'id' });
-			}
-		};
+    request.onupgradeneeded = (event) => {
+      const db = event.target.result;
+      if (!db.objectStoreNames.contains(storeName)) {
+        db.createObjectStore(storeName, { keyPath: "id" });
+      }
+    };
 
-		request.onsuccess = (event) => {
-			resolve(event.target.result);
-		};
+    request.onsuccess = (event) => {
+      resolve(event.target.result);
+    };
 
-		request.onerror = (event) => {
-			reject(event.target.error);
-		};
-	});
+    request.onerror = (event) => {
+      reject(event.target.error);
+    };
+  });
 };
 
+// Отримання значення з IndexedDB
 const getDbValue = async (dbName, storeName, key) => {
-	const db = await getDbInstance(dbName, storeName);
-	return new Promise((resolve, reject) => {
-		const transaction = db.transaction([storeName], 'readonly');
-		const objectStore = transaction.objectStore(storeName);
-		const request = objectStore.get(key);
+  const db = await getDbInstance(dbName, storeName);
+  return new Promise((resolve, reject) => {
+    const transaction = db.transaction([storeName], "readonly");
+    const objectStore = transaction.objectStore(storeName);
+    const request = objectStore.get(key);
 
-		request.onsuccess = (event) => {
-			resolve(event.target.result ? event.target.result.value : undefined);
-		};
+    request.onsuccess = (event) => {
+      resolve(event.target.result ? event.target.result.value : undefined);
+    };
 
-		request.onerror = (event) => {
-			reject(event.target.error);
-		};
-	});
+    request.onerror = (event) => {
+      reject(event.target.error);
+    };
+  });
 };
 
+// Збереження значення в IndexedDB
 const setDbValue = async (dbName, storeName, key, value) => {
-	const db = await getDbInstance(dbName, storeName);
-	return new Promise((resolve, reject) => {
-		const transaction = db.transaction([storeName], 'readwrite');
-		const objectStore = transaction.objectStore(storeName);
-		const request = objectStore.put({ id: key, value });
+  const db = await getDbInstance(dbName, storeName);
+  return new Promise((resolve, reject) => {
+    const transaction = db.transaction([storeName], "readwrite");
+    const objectStore = transaction.objectStore(storeName);
+    const request = objectStore.put({ id: key, value });
 
-		request.onsuccess = () => {
-			notify(key, value);
-			resolve();
-		};
+    request.onsuccess = () => {
+      resolve();
+    };
 
-		request.onerror = (event) => {
-			reject(event.target.error);
-		};
-	});
+    request.onerror = (event) => {
+      reject(event.target.error);
+    };
+  });
 };
 
-const useDBState = (key, defaultValue, dbOpts = { name: 'db', store: 'store' }) => {
-	const [value, setValue] = useState(defaultValue);
-	const didInit = useRef(false);
+// Користувацький хук для IndexedDB
+export const useDBState = (
+  key,
+  defaultValue,
+  dbOpts = { name: "db", store: "store" }
+) => {
+  const [value, setValue] = useState(defaultValue);
 
-	// Extracted dependencies to avoid complex expressions in useEffect
-	const dbName = dbOpts.name;
-	const storeName = dbOpts.store;
-	const serializedValue = JSON.stringify(value);
+  useEffect(() => {
+    // Отримуємо значення при першому рендері
+    const fetchData = async () => {
+      try {
+        const storedValue = await getDbValue(dbOpts.name, dbOpts.store, key);
+        if (storedValue !== undefined) {
+          setValue(storedValue);
+        }
+      } catch (error) {
+        console.error("Error fetching value from IndexedDB:", error);
+      }
+    };
 
-	useEffect(() => {
-		if (!didInit.current) {
-			getDbValue(dbName, storeName, key)
-				.then((storedValue) => {
-					if (storedValue !== undefined) {
-						setValue(storedValue);
-					}
-					didInit.current = true;
-				})
-				.catch((error) => {
-					console.error('Error fetching value from IndexedDB:', error);
-				});
+    fetchData();
+  }, [dbOpts.name, dbOpts.store, key]);
 
-			subscribe(key, setValue);
-		}
-	}, [dbName, storeName, key]);
+  useEffect(() => {
+    // Зберігаємо значення при його зміні
+    const saveData = async () => {
+      try {
+        await setDbValue(dbOpts.name, dbOpts.store, key, value);
+      } catch (error) {
+        console.error("Error saving value to IndexedDB:", error);
+      }
+    };
 
-	useEffect(() => {
-		if (didInit.current) {
-			setDbValue(dbName, storeName, key, value).catch((error) => {
-				console.error('Error setting value in IndexedDB:', error);
-			});
-		}
-	}, [dbName, storeName, key, serializedValue, value]);
+    if (value !== defaultValue) {
+      saveData();
+    }
+  }, [value, dbOpts.name, dbOpts.store, key, defaultValue]);
 
-	return [value, setValue];
+  return [value, setValue];
 };
-
-export { useDBState };

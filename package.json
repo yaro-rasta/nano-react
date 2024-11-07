@@ -1,53 +1,54 @@
 {
-	"name": "nanoweb-react",
-	"description": "A utility library for React applications.",
-	"keywords": [
-		"react",
-		"hooks",
-		"utility"
-	],
-	"license": "ISC",
-	"author": {
-		"name": "ЯRаСлав",
-		"email": "support@yaro.page",
-		"url": "https://yaro.page/i/"
-	},
-	"private": false,
-	"version": "1.0.2",
-	"type": "module",
-	"main": "dist/nano-react.umd.js",
-	"module": "dist/nano-react.es.js",
-	"scripts": {
-		"dev": "vite",
-		"build": "vite build",
-		"lint": "eslint .",
-		"preview": "vite preview",
-		"publish": "node publish.mjs",
-		"test": "echo -e \"Nothing to test yet\""
-	},
-	"dependencies": {
-		"markdown-to-jsx": "^7.5.0",
-		"react": "^18.3.1",
-		"react-dom": "^18.3.1",
-		"react-router-dom": "^6.27.0"
-	},
-	"devDependencies": {
-		"@eslint/js": "^9.13.0",
-		"@types/react": "^18.3.12",
-		"@types/react-dom": "^18.3.1",
-		"@vitejs/plugin-react-swc": "^3.5.0",
-		"autoprefixer": "^10.4.20",
-		"eslint": "^9.13.0",
-		"eslint-plugin-react": "^7.37.2",
-		"eslint-plugin-react-hooks": "^5.0.0",
-		"eslint-plugin-react-refresh": "^0.4.14",
-		"globals": "^15.11.0",
-		"nanoweb-fs": "^1.10.2",
-		"postcss": "^8.4.47",
-		"stylelint": "^16.10.0",
-		"stylelint-config-standard": "^36.0.1",
-		"supports-color": "^9.4.0",
-		"tailwindcss": "^3.4.14",
-		"vite": "^5.4.10"
-	}
+  "name": "nanoweb-react",
+  "description": "A utility library for React applications.",
+  "keywords": [
+    "react",
+    "hooks",
+    "utility"
+  ],
+  "license": "ISC",
+  "author": {
+    "name": "ЯRаСлав",
+    "email": "support@yaro.page",
+    "url": "https://yaro.page/i/"
+  },
+  "private": false,
+  "version": "1.0.2",
+  "type": "module",
+  "main": "dist/nano-react.umd.js",
+  "module": "dist/nano-react.es.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint .",
+    "preview": "vite preview",
+    "publish": "node publish.mjs",
+    "test": "echo -e \"Nothing to test yet\""
+  },
+  "dependencies": {
+    "markdown-to-jsx": "^7.5.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-i18next": "^15.1.1",
+    "react-router-dom": "^6.27.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.13.0",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react-swc": "^3.5.0",
+    "autoprefixer": "^10.4.20",
+    "eslint": "^9.13.0",
+    "eslint-plugin-react": "^7.37.2",
+    "eslint-plugin-react-hooks": "^5.0.0",
+    "eslint-plugin-react-refresh": "^0.4.14",
+    "globals": "^15.11.0",
+    "nanoweb-fs": "^1.10.2",
+    "postcss": "^8.4.47",
+    "stylelint": "^16.10.0",
+    "stylelint-config-standard": "^36.0.1",
+    "supports-color": "^9.4.0",
+    "tailwindcss": "^3.4.14",
+    "vite": "^5.4.10"
+  }
 }
