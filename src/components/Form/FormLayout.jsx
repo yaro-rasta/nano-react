@@ -4,6 +4,7 @@ import EditableString from "./EditableString";
 import EditableNumber from "./EditableNumber";
 import EditableAmount from "./EditableAmount";
 import { useDBState } from "../../state/IndexedDB";
+import EditableTime from "./EditableTime";
 
 function FormLayout() {
   const { t } = AppProvider.useAppContext();
@@ -13,6 +14,7 @@ function FormLayout() {
     "textOneLine",
     t("textOneLine")
   );
+
   const [numberValue, setNumberValue] = useLSState("numberValue", 0);
   const [amountValue, setAmountValue] = useLSState("amountValue", 0);
 
@@ -49,6 +51,11 @@ function FormLayout() {
           setCurrency({ ...currency, currency: newCurrency })
         } // Оновлюємо валюту
         t={t}
+      />
+      <EditableTime
+        id="timeValue" // Унікальний id для поля часу
+        name="timeValue"
+        label={t("Time")}
       />
     </div>
   );
