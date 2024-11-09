@@ -1,6 +1,9 @@
 /**
  * EditableNumber - Компонент для редагування числових значень.
  *
+ * Цей компонент дозволяє користувачу редагувати числові значення через input типу "number". Користувач може змінювати значення
+ * у числовому полі та зберігати їх, натискаючи Enter або скасовувати зміни через Escape. Зміни зберігаються в IndexedDB.
+ *
  * @param {string} id - Унікальний ідентифікатор для поля введення.
  * @param {string} name - Ім'я поля введення.
  * @param {string} label - Текст для мітки, що описує поле.
@@ -11,45 +14,41 @@
 
 import PropTypes from "prop-types";
 import { useState } from "react";
-import { useTranslation } from "react-i18next";
-import { useDBState } from "../../state/IndexedDB"; // Імпортуємо ваш хук
+import { useDBState } from "../../state/IndexedDB";
 
 const EditableNumber = ({ id, name, label, value, onChange }) => {
-  const { t } = useTranslation();
   const [editMode, setEditMode] = useState(false);
-
-  // Використовуємо хук для збереження значення в IndexedDB
   const [numberValue, setNumberValue] = useDBState(id, value);
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
       setEditMode(false);
-      onChange(numberValue); // Викликаємо onChange для збереження нового значення
+      onChange(numberValue);
     } else if (e.key === "Escape") {
-      setNumberValue(value); // Відміняємо редагування при Escape
+      setNumberValue(value);
       setEditMode(false);
     }
   };
 
   return (
     <div className="flex items-center gap-2">
-      <label htmlFor={id}>{t(label)}</label>
+      <label htmlFor={id}>{label}</label>
       {editMode ? (
         <input
           type="number"
           id={id}
           name={name}
-          value={numberValue} // Використовуємо значення з IndexedDB
-          onChange={(e) => setNumberValue(Number(e.target.value))} // Оновлюємо значення в IndexedDB
+          value={numberValue}
+          onChange={(e) => setNumberValue(Number(e.target.value))}
           onKeyDown={handleKeyDown}
           className="border rounded p-2"
           onBlur={() => {
             setEditMode(false);
-            onChange(numberValue); // Зберігаємо число при втраті фокуса
+            onChange(numberValue);
           }}
         />
       ) : (
-        <span onClick={() => setEditMode(true)}>{numberValue}</span> // Виводимо число з IndexedDB
+        <span onClick={() => setEditMode(true)}>{numberValue}</span>
       )}
     </div>
   );

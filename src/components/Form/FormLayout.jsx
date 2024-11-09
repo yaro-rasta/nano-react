@@ -5,24 +5,25 @@ import EditableNumber from "./EditableNumber";
 import EditableAmount from "./EditableAmount";
 import { useDBState } from "../../state/IndexedDB";
 import EditableTime from "./EditableTime";
+import EditableWeekday from "./EditableWeekday";
 
 function FormLayout() {
   const { t } = AppProvider.useAppContext();
 
-  // Використовуємо useLSState для звичайних значень
   const [textOneLine, setTextOneLine] = useLSState(
     "textOneLine",
     t("textOneLine")
   );
-
   const [numberValue, setNumberValue] = useLSState("numberValue", 0);
   const [amountValue, setAmountValue] = useLSState("amountValue", 0);
 
-  // Використовуємо useDBState для валют
   const [currency, setCurrency] = useDBState("currency", {
     amount: 0,
     currency: "USD",
   });
+
+  // Додаємо значення для компонента EditableTime
+  const [timeValue, setTimeValue] = useDBState("timeValue", "12:00");
 
   return (
     <div className="flex flex-col gap-5">
@@ -46,17 +47,20 @@ function FormLayout() {
         label={t("Amount")}
         value={amountValue}
         onChange={setAmountValue}
-        currency={currency.currency} // Передаємо валюту окремо
+        currency={currency.currency}
         setCurrency={(newCurrency) =>
           setCurrency({ ...currency, currency: newCurrency })
-        } // Оновлюємо валюту
+        }
         t={t}
       />
       <EditableTime
-        id="timeValue" // Унікальний id для поля часу
+        id="timeValue"
         name="timeValue"
         label={t("Time")}
+        value={timeValue} // Додаємо значення для часу
+        onInput={setTimeValue} // Оновлюємо значення при зміні
       />
+      <EditableWeekday label={t("Weekday")} />
     </div>
   );
 }

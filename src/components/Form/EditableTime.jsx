@@ -1,100 +1,46 @@
 /**
- * @comment #dev/editable.md
- * Компонент EditableTime
+ * EditableTime - Компонент для редагування часу.
  *
- * Компонент `EditableTime` дозволяє редагувати час у двох режимах:
- * 1. **Режим перегляду:** Відображає час як текст.
- * 2. **Режим редагування:** Дозволяє редагувати час через інпут типу `time`.
+ * Цей компонент дозволяє користувачу редагувати значення часу через поле введення або переглядати його в режимі перегляду.
+ * В режимі редагування користувач може вибрати час через елемент input типу "time". Зміни зберігаються в IndexedDB.
  *
- * Користувач може натискати на час для переходу в режим редагування. Після редагування, зміни можуть бути збережені через обробник `onInput`.
- *
- * ## Використання:
- * Імпортуйте компонент:
- * ```jsx
- * import EditableTime from './EditableTime';
- * ```
- *
- * Використовуйте компонент у вашому додатку:
- * ```jsx
- * <EditableTime
- *   value={yourValue}
- *   onInput={handleTimeChange}
- *   name="timeInput"
- *   id="timeInputId"
- *   label="Time"
- * />
- * ```
- *
- * ## Пропси:
- * - `value` (string): поточне значення часу для відображення або редагування.
- * - `onInput` (function): функція для обробки зміни часу.
- * - `label` (string, необов'язково): етикетка для поля.
- * - `showLabel` (bool, необов'язково): якщо `true`, відображатиметься етикетка.
- * - `id` (string, обов'язково): ідентифікатор інпуту.
- * - `name` (string, обов'язково): ім'я інпуту для передачі даних.
- *
- * ## Життєвий цикл компонента:
- * 1. Спочатку компонент відображається в режимі перегляду, де показується поточне значення часу.
- * 2. Користувач може натискати на значення часу, щоб переключитися в режим редагування.
- * 3. В режимі редагування користувач вводить нове значення часу.
- * 4. Після редагування, зміни зберігаються при втраті фокусу або за допомогою батьківського обробника `onInput`.
- * 5. Компонент знову переходить в режим перегляду після внесення змін або скасування.
- *
- * ## Використання хука для IndexedDB:
- * Компонент зберігає значення часу в IndexedDB для збереження даних між перезавантаженнями сторінки.
- * Це дозволяє відновити попереднє значення після оновлення сторінки або повторного завантаження.
- *
- * ## Тестування:
- * Для тестування компонента можна перевіряти:
- * - Чи відображається правильне значення часу в режимі перегляду.
- * - Чи можна редагувати значення часу через інпут.
- * - Чи правильно працює перемикання між режимами перегляду та редагування.
- * - Чи зберігаються зміни або скасовуються відповідно до дій користувача.
- *
- * ## Важливі аспекти:
- * - Компонент використовує хук `useDBState` для роботи з IndexedDB, що дозволяє зберігати та отримувати значення часу.
- * - Пропс `onInput` дозволяє контролювати зміни значення часу у батьківському компоненті.
- * - При редагуванні значення часу, зміни оновлюються в IndexedDB і передаються через обробник `onInput`.
+ * @param {string} id - Унікальний ідентифікатор для поля введення.
+ * @param {string} name - Ім'я поля введення.
+ * @param {string} label - Текст для мітки, що описує поле.
+ * @param {string} value - Поточне значення часу.
+ * @param {function} onInput - Функція зворотного виклику для обробки змін значення.
+ * @param {boolean} showLabel - Показати або сховати мітку.
+ * @returns {React.Element} - Компонент для редагування часу.
  */
 
 import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
-import { useDBState } from "../../state/IndexedDB"; // Імпортуємо хук для роботи з IndexedDB
+import { useDBState } from "../../state/IndexedDB";
 
 const EditableTime = ({ value, onInput, label, showLabel, ...props }) => {
-  // Використовуємо useDBState для збереження значення часу в IndexedDB
-  const [currentValue, setCurrentValue] = useDBState(props.id, value); // Завантажуємо значення з IndexedDB або використовуємо default value
-
+  const [currentValue, setCurrentValue] = useDBState(props.id, value);
   const [isEditing, setIsEditing] = useState(false);
 
-  // Перехід в режим редагування
+  useEffect(() => {
+    if (value !== currentValue) setCurrentValue(value);
+  }, [value]);
+
   const handleClick = () => {
     setIsEditing(true);
   };
 
-  // Завершення редагування при втраті фокусу
   const handleBlur = () => {
     setIsEditing(false);
-    if (onInput) {
-      onInput(currentValue);
-    }
+    if (onInput && currentValue !== value) onInput(currentValue);
   };
 
-  // Оновлення значення часу
   const handleChange = (event) => {
-    setCurrentValue(event.target.value); // Оновлюємо значення часу в IndexedDB
+    setCurrentValue(event.target.value);
   };
-
-  useEffect(() => {
-    if (onInput) {
-      onInput(currentValue); // Оновлюємо батьківський компонент, коли значення змінюється
-    }
-  }, [currentValue, onInput]);
 
   return (
     <div className="editable-time-container">
       {showLabel && label && <div className="editable-time-label">{label}</div>}
-
       <div className="editable-time-content">
         {isEditing ? (
           <input
@@ -121,8 +67,8 @@ EditableTime.propTypes = {
   onInput: PropTypes.func.isRequired,
   label: PropTypes.string,
   showLabel: PropTypes.bool,
-  id: PropTypes.string.isRequired, // id має бути рядком і обов'язковим
-  name: PropTypes.string.isRequired, // name має бути рядком і обов'язковим
+  id: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
 };
 
 EditableTime.defaultProps = {
