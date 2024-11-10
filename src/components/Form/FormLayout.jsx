@@ -1,11 +1,3 @@
-import { useLSState } from "../..";
-import { AppProvider } from "../../context/AppContext";
-import EditableString from "./EditableString";
-import EditableNumber from "./EditableNumber";
-import EditableAmount from "./EditableAmount";
-import defaultCurrencies from "./currencies";
-import EditableTime from "./EditableTime";
-
 /**
  * @comment #dev/editable.md
  * # FormLayout Компонент
@@ -65,7 +57,19 @@ import EditableTime from "./EditableTime";
  * }
  * ```
  */
-function FormLayout() {
+
+import { useLSState } from "../..";
+import { AppProvider } from "../../context/AppContext";
+import EditableString from "./EditableString";
+import EditableNumber from "./EditableNumber";
+import EditableAmount from "./EditableAmount";
+import defaultCurrencies from "./currencies";
+import EditableTime from "./EditableTime";
+import EditableSelect from "./EditableSelect";
+import daysOfWeek from "./daysWeek";
+import { useEffect } from "react";
+
+const FormLayout = () => {
   const { t } = AppProvider.useAppContext();
   const [textOneLine, setTextOneLine] = useLSState(
     "textOneLine",
@@ -75,6 +79,10 @@ function FormLayout() {
   const [amountValue, setAmountValue] = useLSState("amountValue", 0);
   const [currency, setCurrency] = useLSState("currency", defaultCurrencies[0]);
   const [timeValue, setTimeValue] = useLSState("timeValue", "10:00");
+  const [selectedDay, setSelectedDay] = useLSState("selectedDay", "Day");
+  const [days, setDays] = useEffect(() => {
+    console.log("selectedDay has changed:", selectedDay);
+  }, [selectedDay]);
 
   return (
     <div className="flex flex-col gap-5">
@@ -110,8 +118,16 @@ function FormLayout() {
         value={timeValue}
         onInput={setTimeValue}
       />
+      <EditableSelect
+        id="daysOfWeek"
+        name="daysOfWeek"
+        label="Days of the week"
+        value={selectedDay}
+        onChange={setSelectedDay}
+        options={daysOfWeek}
+      />
     </div>
   );
-}
+};
 
 export default FormLayout;
