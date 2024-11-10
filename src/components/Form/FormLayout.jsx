@@ -80,53 +80,58 @@ const FormLayout = () => {
   const [currency, setCurrency] = useLSState("currency", defaultCurrencies[0]);
   const [timeValue, setTimeValue] = useLSState("timeValue", "10:00");
   const [selectedDay, setSelectedDay] = useLSState("selectedDay", "Day");
-  const [days, setDays] = useEffect(() => {
+
+  useEffect(() => {
     console.log("selectedDay has changed:", selectedDay);
   }, [selectedDay]);
 
   return (
-    <div className="flex flex-col gap-5">
-      <EditableString
-        id="textOneLine"
-        name="textOneLine"
-        label="Name"
-        // label={t("Name")}
-        value={textOneLine}
-        onChange={setTextOneLine}
-      />
-      <EditableNumber
-        id="numberValue"
-        name="numberValue"
-        label={t("Number")}
-        value={numberValue}
-        onChange={setNumberValue}
-      />
-      <EditableAmount
-        id="amountValue"
-        name="amountValue"
-        label={t("Amount")}
-        value={amountValue}
-        onChange={setAmountValue}
-        currency={currency}
-        setCurrency={setCurrency}
-        t={t}
-      />
-      <EditableTime
-        id="timeValue"
-        name="timeValue"
-        label={t("Time")}
-        value={timeValue}
-        onInput={setTimeValue}
-      />
-      <EditableSelect
-        id="daysOfWeek"
-        name="daysOfWeek"
-        label="Days of the week"
-        value={selectedDay}
-        onChange={setSelectedDay}
-        options={daysOfWeek}
-      />
-    </div>
+    <>
+      <div className="flex flex-col gap-5">
+        <EditableString
+          id="textOneLine"
+          name="textOneLine"
+          label="Name"
+          // label={t("Name")}
+          value={textOneLine}
+          onChange={setTextOneLine}
+        />
+        <EditableNumber
+          id="numberValue"
+          name="numberValue"
+          label={t("Number")}
+          value={numberValue}
+          onChange={setNumberValue}
+        />
+        <EditableAmount
+          id="amountValue"
+          name="amountValue"
+          label={t("Amount")}
+          value={amountValue}
+          onChange={setAmountValue}
+          currency={currency}
+          setCurrency={setCurrency}
+          t={t}
+        />
+        <EditableTime
+          id="timeValue"
+          name="timeValue"
+          label={t("Time")}
+          value={timeValue}
+          onInput={setTimeValue}
+        />
+        <EditableSelect
+          id="daysOfWeek"
+          name="daysOfWeek"
+          label="Days of the week"
+          value={selectedDay}
+          onChange={setSelectedDay}
+          options={daysOfWeek}
+        />
+      </div>
+
+      <div> My table</div>
+    </>
   );
 };
 
