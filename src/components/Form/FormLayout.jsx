@@ -17,6 +17,7 @@ function FormLayout() {
   const [numberValue, setNumberValue] = useLSState("numberValue", 0);
   const [amountValue, setAmountValue] = useLSState("amountValue", 0);
 
+  // Додаємо значення для компонента EditableAmount
   const [currency, setCurrency] = useDBState("currency", {
     amount: 0,
     currency: "USD",

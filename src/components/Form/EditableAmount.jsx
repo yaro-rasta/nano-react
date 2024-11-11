@@ -1,106 +1,161 @@
-/**
- * EditableAmount - Компонент для редагування суми з підтримкою валют.
- *
- * Цей компонент дозволяє користувачу редагувати числове значення суми та вибирати валюту з доступного списку.
- * Користувач може змінювати суму та валюту, після чого зміни зберігаються в IndexedDB.
- * Підтримує кілька валют (USD, UAH, RUB) та локалізацію для назв валют.
- *
- * @param {string} id - Унікальний ідентифікатор для поля введення.
- * @param {string} name - Ім'я поля введення.
- * @param {string} label - Текст для мітки, що описує поле.
- * @param {number} value - Поточне числове значення суми, яку можна редагувати.
- * @param {function} onChange - Функція зворотного виклику для обробки змін значення.
- * @param {string} currency - Поточна валюта суми.
- * @param {function} setCurrency - Функція для оновлення валюти.
- * @param {function} t - Функція перекладу для локалізації тексту.
- * @returns {React.Element} - Компонент для редагування суми з вибором валюти.
- */
-
 import PropTypes from "prop-types";
-import { useState } from "react";
+import EditableBase from "./EditableBase";
 import { useDBState } from "../../state/IndexedDB";
+import defaultCurrencies from "./currencies";
 
-const EditableAmount = ({
+// Компонент перегляду (для відображення значення)
+const ViewComponent = ({
+  value,
+  label,
+  showLabel,
+  onClick,
+  currency,
+  t = (v) => v,
+}) => (
+  <div className="flex items-center w-full" onClick={onClick}>
+    {showLabel && label && <label className="mr-2">{t(label)}</label>}
+    <span>{`${value} ${currency.char}`}</span>
+  </div>
+);
+
+ViewComponent.propTypes = {
+  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+  label: PropTypes.string,
+  showLabel: PropTypes.bool,
+  onClick: PropTypes.func,
+  currency: PropTypes.shape({
+    code: PropTypes.string.isRequired,
+    char: PropTypes.string.isRequired,
+    title: PropTypes.string.isRequired,
+  }).isRequired,
+  t: PropTypes.func,
+};
+
+// Компонент редагування (для вводу значення)
+const EditComponent = ({
   id,
   name,
-  label,
   value,
-  onChange,
+  label,
+  showLabel,
+  onInput,
   currency,
-  setCurrency,
-  t,
+  onCurrencyChange,
+  currencies,
+  t = (v) => v,
 }) => {
-  // Стан для контролю режиму редагування
-  const [editMode, setEditMode] = useState(false);
-  const [selectedCurrency, setSelectedCurrency] = useDBState(
-    "selectedCurrency",
-    currency
-  );
-
-  // Обробка натискання клавіш Enter та Escape
-  const handleKeyDown = (e) => {
-    if (e.key === "Enter") {
-      onSave();
-    } else if (e.key === "Escape") {
-      onCancel();
-    }
-  };
-
-  // Зберігає значення та виходить з режиму редагування
-  const onSave = () => {
-    setCurrency(selectedCurrency);
-    setEditMode(false);
-  };
-
-  // Відміняє зміни та виходить з режиму редагування
-  const onCancel = () => {
-    setSelectedCurrency(currency);
-    setEditMode(false);
-  };
-
   return (
-    <div className="flex items-center gap-2">
-      <label htmlFor={id}>{t(label)}</label>
-      {editMode ? (
-        <>
-          <input
-            type="number"
-            id={id}
-            name={name}
-            value={value}
-            onChange={(e) => onChange(Number(e.target.value))}
-            className="border rounded p-2"
-            onKeyDown={handleKeyDown}
-            onBlur={onSave}
-          />
-          <select
-            value={selectedCurrency}
-            onChange={(e) => setSelectedCurrency(e.target.value)}
-            className="border rounded p-2"
-          >
-            <option value="USD">{t("Долари (USD)")}</option>
-            <option value="UAH">{t("Гривні (UAH)")}</option>
-            <option value="RUB">{t("Рублі (RUB)")}</option>
-          </select>
-        </>
-      ) : (
-        <span onClick={() => setEditMode(true)} className="cursor-pointer">
-          {value} {selectedCurrency}
-        </span>
+    <div className="flex items-center w-full">
+      {showLabel && label && (
+        <label htmlFor={id} className="mr-2">
+          {label}
+        </label>
       )}
+      <input
+        type="number"
+        id={id}
+        name={name}
+        value={value}
+        className="border rounded p-2 w-full"
+        onInput={onInput}
+      />
+      <select
+        value={currency.code}
+        onChange={(e) => onCurrencyChange(e.target.value)}
+        className="ml-2 border rounded p-2"
+      >
+        {currencies.map((curr) => (
+          <option key={curr.code} value={curr.code}>
+            {t(curr.title)}
+          </option>
+        ))}
+      </select>
     </div>
   );
 };
 
-EditableAmount.propTypes = {
+EditComponent.propTypes = {
   id: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
-  label: PropTypes.string.isRequired,
-  value: PropTypes.number.isRequired,
-  onChange: PropTypes.func.isRequired,
-  currency: PropTypes.string.isRequired,
-  setCurrency: PropTypes.func.isRequired,
-  t: PropTypes.func.isRequired,
+  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+  label: PropTypes.string,
+  showLabel: PropTypes.bool,
+  onInput: PropTypes.func.isRequired,
+  currency: PropTypes.shape({
+    code: PropTypes.string.isRequired,
+    char: PropTypes.string.isRequired,
+    title: PropTypes.string.isRequired,
+  }).isRequired,
+  onCurrencyChange: PropTypes.func.isRequired,
+  currencies: PropTypes.arrayOf(
+    PropTypes.shape({
+      code: PropTypes.string.isRequired,
+      char: PropTypes.string.isRequired,
+      title: PropTypes.string.isRequired,
+    })
+  ).isRequired,
+  t: PropTypes.func,
+};
+
+// Основний компонент EditableAmount
+const EditableAmount = ({
+  currencies = defaultCurrencies,
+  currency,
+  setCurrency,
+  t = (v) => v,
+  ...props
+}) => {
+  const [value, setValue] = useDBState(props.value, props.value); // Використовуємо хук для збереження значення в IndexedDB
+
+  const handleCurrencyChange = (code) => {
+    const selectedCurrency = currencies.find((curr) => curr.code === code);
+    setCurrency(selectedCurrency); // Оновлюємо валюту
+  };
+
+  const handleInput = (e) => {
+    const newValue = e.target.value;
+    setValue(newValue); // Оновлюємо значення
+  };
+
+  return (
+    <EditableBase
+      {...props}
+      value={value}
+      viewComponent={(viewProps) => (
+        <ViewComponent {...viewProps} currency={currency} t={t} />
+      )}
+      editComponent={(editProps) => (
+        <EditComponent
+          {...editProps}
+          currency={currency}
+          onCurrencyChange={handleCurrencyChange}
+          currencies={currencies}
+          t={t}
+          onInput={handleInput}
+        />
+      )}
+    />
+  );
+};
+
+EditableAmount.displayName = "EditableAmount";
+
+EditableAmount.propTypes = {
+  ...EditableBase.propTypes,
+  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+  currency: PropTypes.shape({
+    code: PropTypes.string.isRequired,
+    char: PropTypes.string.isRequired,
+    title: PropTypes.string.isRequired,
+  }).isRequired,
+  currencies: PropTypes.arrayOf(
+    PropTypes.shape({
+      code: PropTypes.string.isRequired,
+      char: PropTypes.string.isRequired,
+      title: PropTypes.string.isRequired,
+    })
+  ),
+  t: PropTypes.func,
 };
 
 export default EditableAmount;

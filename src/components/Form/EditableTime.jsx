@@ -1,78 +1,87 @@
-/**
- * EditableTime - Компонент для редагування часу.
- *
- * Цей компонент дозволяє користувачу редагувати значення часу через поле введення або переглядати його в режимі перегляду.
- * В режимі редагування користувач може вибрати час через елемент input типу "time". Зміни зберігаються в IndexedDB.
- *
- * @param {string} id - Унікальний ідентифікатор для поля введення.
- * @param {string} name - Ім'я поля введення.
- * @param {string} label - Текст для мітки, що описує поле.
- * @param {string} value - Поточне значення часу.
- * @param {function} onInput - Функція зворотного виклику для обробки змін значення.
- * @param {boolean} showLabel - Показати або сховати мітку.
- * @returns {React.Element} - Компонент для редагування часу.
- */
-
 import PropTypes from "prop-types";
-import { useState, useEffect } from "react";
+import EditableBase from "./EditableBase";
 import { useDBState } from "../../state/IndexedDB";
 
-const EditableTime = ({ value, onInput, label, showLabel, ...props }) => {
-  const [currentValue, setCurrentValue] = useDBState(props.id, value);
-  const [isEditing, setIsEditing] = useState(false);
+// Компонент перегляду
+const ViewComponent = ({ value, label, showLabel, onClick, t = (v) => v }) => (
+  <div className="flex items-center w-full" onClick={onClick}>
+    {showLabel && label && <label className="mr-2">{t(label)}</label>}
+    <span>{value}</span>
+  </div>
+);
 
-  useEffect(() => {
-    if (value !== currentValue) setCurrentValue(value);
-  }, [value]);
+ViewComponent.propTypes = {
+  value: PropTypes.string.isRequired,
+  label: PropTypes.string,
+  showLabel: PropTypes.bool,
+  onClick: PropTypes.func,
+  t: PropTypes.func,
+};
 
-  const handleClick = () => {
-    setIsEditing(true);
-  };
+// Компонент редагування
+const EditComponent = ({
+  id,
+  name,
+  value,
+  label,
+  showLabel,
+  onInput,
+  t = (v) => v,
+}) => (
+  <div className="flex items-center w-full">
+    {showLabel && label && (
+      <label htmlFor={id} className="mr-2">
+        {label}
+      </label>
+    )}
+    <input
+      type="time"
+      id={id}
+      name={name}
+      value={value}
+      className="border rounded p-2 w-full"
+      onInput={onInput}
+    />
+  </div>
+);
 
-  const handleBlur = () => {
-    setIsEditing(false);
-    if (onInput && currentValue !== value) onInput(currentValue);
-  };
+EditComponent.propTypes = {
+  id: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
+  value: PropTypes.string.isRequired,
+  label: PropTypes.string,
+  showLabel: PropTypes.bool,
+  onInput: PropTypes.func.isRequired,
+  t: PropTypes.func,
+};
 
-  const handleChange = (event) => {
-    setCurrentValue(event.target.value);
+// Основний компонент EditableTime
+const EditableTime = ({ value, setValue, t = (v) => v, ...props }) => {
+  const [currentValue, setCurrentValue] = useDBState(value, value); // Використовуємо хук для збереження значення в IndexedDB
+
+  const handleInput = (e) => {
+    const newValue = e.target.value;
+    setCurrentValue(newValue); // Оновлюємо значення
   };
 
   return (
-    <div className="editable-time-container">
-      {showLabel && label && <div className="editable-time-label">{label}</div>}
-      <div className="editable-time-content">
-        {isEditing ? (
-          <input
-            type="time"
-            id={props.id}
-            name={props.name}
-            value={currentValue}
-            onChange={handleChange}
-            onBlur={handleBlur}
-            className="editable-time-input"
-          />
-        ) : (
-          <span onClick={handleClick} className="editable-time-view">
-            {currentValue || "Click to set time"}
-          </span>
-        )}
-      </div>
-    </div>
+    <EditableBase
+      {...props}
+      value={currentValue}
+      viewComponent={(viewProps) => <ViewComponent {...viewProps} t={t} />}
+      editComponent={(editProps) => (
+        <EditComponent {...editProps} onInput={handleInput} t={t} />
+      )}
+    />
   );
 };
 
-EditableTime.propTypes = {
-  value: PropTypes.string.isRequired,
-  onInput: PropTypes.func.isRequired,
-  label: PropTypes.string,
-  showLabel: PropTypes.bool,
-  id: PropTypes.string.isRequired,
-  name: PropTypes.string.isRequired,
-};
+EditableTime.displayName = "EditableTime";
 
-EditableTime.defaultProps = {
-  showLabel: true,
+EditableTime.propTypes = {
+  ...EditableBase.propTypes,
+  value: PropTypes.string.isRequired,
+  t: PropTypes.func,
 };
 
 export default EditableTime;
