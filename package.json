@@ -18,6 +18,7 @@
 	"main": "dist/nano-react.umd.js",
 	"module": "dist/nano-react.es.js",
 	"scripts": {
+		"start": "npm run dev",
 		"dev": "vite",
 		"build": "vite build",
 		"lint": "eslint .",

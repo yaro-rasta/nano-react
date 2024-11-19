@@ -94,41 +94,30 @@
  * });
  * ```
  */
-
+import { useTheme } from "../../context/ThemeContext";
 import EditableBase from "./EditableBase";
 import PropTypes from "prop-types";
 
-const ViewComponent = ({ value, label, showLabel, onClick }) => (
-	<div className="flex items-center" onClick={onClick}>
-		{showLabel && label && <label className="mr-2">{label}</label>}
-		<span>{value}</span>
-	</div>
-);
-
-ViewComponent.propTypes = {
-	value: PropTypes.string.isRequired,
-	label: PropTypes.string,
-	showLabel: PropTypes.bool,
-	onClick: PropTypes.func,
+const EditComponent = ({ id, name, value, label, showLabel, onInput }) => {
+	const theme = useTheme();
+	return (
+		<div className={theme.editContainer || theme.container}>
+			{showLabel && label && (
+				<label htmlFor={id} className={theme.editLabel || theme.label}>
+					{label}
+				</label>
+			)}
+			<input
+				type="text"
+				id={id}
+				name={name}
+				value={String(value)}
+				className={theme.input}
+				onInput={onInput}
+			/>
+		</div>
+	);
 };
-
-const EditComponent = ({ id, name, value, label, showLabel, onInput }) => (
-	<div className="flex items-center">
-		{showLabel && label && (
-			<label htmlFor={id} className="mr-2">
-				{label}
-			</label>
-		)}
-		<input
-			type="text"
-			id={id}
-			name={name}
-			value={value}
-			className="border rounded p-2 w-full"
-			onInput={onInput}
-		/>
-	</div>
-);
 
 EditComponent.propTypes = {
 	id: PropTypes.string.isRequired,
@@ -142,7 +131,6 @@ EditComponent.propTypes = {
 const EditableString = (props) => (
 	<EditableBase
 		{...props}
-		viewComponent={ViewComponent}
 		editComponent={EditComponent}
 	/>
 );
