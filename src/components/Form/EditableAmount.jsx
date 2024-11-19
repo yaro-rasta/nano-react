@@ -175,9 +175,9 @@ const EditComponent = ({
       />
       <select
         value={currency.code}
-		// @todo логіка базового компонтента зміна значення, currency є частиною комплексного значення
-		// тому має ще й спрацьовувати onChange, тобто value = { amount, currency }
-		// де amount це сума, а currency це код валюти
+        // @todo логіка базового компонтента зміна значення, currency є частиною комплексного значення
+        // тому має ще й спрацьовувати onChange, тобто value = { amount, currency }
+        // де amount це сума, а currency це код валюти
         onChange={(e) => onCurrencyChange(e.target.value)}
         className="ml-2 border rounded p-2"
       >
