@@ -5,7 +5,8 @@ import { useDBState } from "../../state/IndexedDB";
 // Компонент перегляду
 const ViewComponent = ({ value, label, showLabel, onClick, t = (v) => v }) => (
   <div className="flex items-center w-full" onClick={onClick}>
-    {showLabel && label && <label className="mr-2">{t(label)}</label>}
+    {showLabel && label && <label className="mr-2">{t(label)}</label>}{" "}
+    {/* Викликаємо t для перекладу лейбла */}
     <span>{value}</span>
   </div>
 );
@@ -31,7 +32,7 @@ const EditComponent = ({
   <div className="flex items-center w-full">
     {showLabel && label && (
       <label htmlFor={id} className="mr-2">
-        {label}
+        {t(label)} {/* Викликаємо t для перекладу лейбла */}
       </label>
     )}
     <input
@@ -56,12 +57,21 @@ EditComponent.propTypes = {
 };
 
 // Основний компонент EditableNumber
-const EditableNumber = ({ value, setValue, t = (v) => v, ...props }) => {
-  const [currentValue, setCurrentValue] = useDBState(value, value); // Використовуємо хук для збереження значення в IndexedDB
+const EditableNumber = ({ value, t = (v) => v, ...props }) => {
+  const [currentValue, setCurrentValue] = useDBState(props.id, value); // Використовуємо хук для збереження значення в IndexedDB
 
+  // Обробка введення значення
   const handleInput = (e) => {
     const newValue = e.target.value;
-    setCurrentValue(newValue); // Оновлюємо значення
+    // Перевірка, якщо порожнє значення, то очищуємо
+    if (newValue === "") {
+      setCurrentValue(""); // Оновлюємо значення на порожнє
+    } else {
+      const numberValue = Number(newValue);
+      if (!isNaN(numberValue)) {
+        setCurrentValue(numberValue); // Якщо це число, оновлюємо стейт
+      }
+    }
   };
 
   return (

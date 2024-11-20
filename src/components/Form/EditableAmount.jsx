@@ -9,12 +9,13 @@ const ViewComponent = ({
   label,
   showLabel,
   onClick,
-  currency,
+  currency, // currency має бути об'єктом
   t = (v) => v,
 }) => (
   <div className="flex items-center w-full" onClick={onClick}>
     {showLabel && label && <label className="mr-2">{t(label)}</label>}
-    <span>{`${value} ${currency.char}`}</span>
+    <span>{`${value} ${currency.char}`}</span>{" "}
+    {/* Використовуємо об'єкт currency */}
   </div>
 );
 
@@ -27,7 +28,7 @@ ViewComponent.propTypes = {
     code: PropTypes.string.isRequired,
     char: PropTypes.string.isRequired,
     title: PropTypes.string.isRequired,
-  }).isRequired,
+  }).isRequired, // Вимога до currency - має бути об'єкт
   t: PropTypes.func,
 };
 
@@ -39,7 +40,7 @@ const EditComponent = ({
   label,
   showLabel,
   onInput,
-  currency,
+  currency, // currency має бути об'єктом
   onCurrencyChange,
   currencies,
   t = (v) => v,
@@ -60,13 +61,13 @@ const EditComponent = ({
         onInput={onInput}
       />
       <select
-        value={currency.code}
+        value={currency.code} // Використовуємо об'єкт currency для вибору
         onChange={(e) => onCurrencyChange(e.target.value)}
         className="ml-2 border rounded p-2"
       >
         {currencies.map((curr) => (
           <option key={curr.code} value={curr.code}>
-            {t(curr.title)}
+            {t(curr.title)} {/* Переклад назви валюти */}
           </option>
         ))}
       </select>
@@ -85,7 +86,7 @@ EditComponent.propTypes = {
     code: PropTypes.string.isRequired,
     char: PropTypes.string.isRequired,
     title: PropTypes.string.isRequired,
-  }).isRequired,
+  }).isRequired, // currency - об'єкт
   onCurrencyChange: PropTypes.func.isRequired,
   currencies: PropTypes.arrayOf(
     PropTypes.shape({
@@ -100,7 +101,7 @@ EditComponent.propTypes = {
 // Основний компонент EditableAmount
 const EditableAmount = ({
   currencies = defaultCurrencies,
-  currency,
+  currency, // currency має бути об'єктом
   setCurrency,
   t = (v) => v,
   ...props
@@ -109,7 +110,7 @@ const EditableAmount = ({
 
   const handleCurrencyChange = (code) => {
     const selectedCurrency = currencies.find((curr) => curr.code === code);
-    setCurrency(selectedCurrency); // Оновлюємо валюту
+    setCurrency(selectedCurrency); // Оновлюємо валюту об'єкт
   };
 
   const handleInput = (e) => {
@@ -122,12 +123,12 @@ const EditableAmount = ({
       {...props}
       value={value}
       viewComponent={(viewProps) => (
-        <ViewComponent {...viewProps} currency={currency} t={t} />
+        <ViewComponent {...viewProps} currency={currency} t={t} /> // Передаємо об'єкт currency
       )}
       editComponent={(editProps) => (
         <EditComponent
           {...editProps}
-          currency={currency}
+          currency={currency} // Передаємо об'єкт currency
           onCurrencyChange={handleCurrencyChange}
           currencies={currencies}
           t={t}
@@ -147,7 +148,7 @@ EditableAmount.propTypes = {
     code: PropTypes.string.isRequired,
     char: PropTypes.string.isRequired,
     title: PropTypes.string.isRequired,
-  }).isRequired,
+  }).isRequired, // currency - об'єкт
   currencies: PropTypes.arrayOf(
     PropTypes.shape({
       code: PropTypes.string.isRequired,
