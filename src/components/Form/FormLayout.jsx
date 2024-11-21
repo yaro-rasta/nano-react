@@ -60,6 +60,10 @@
 
 import { useLSState } from "../..";
 import { AppProvider } from "../../context/AppContext";
+import { ThemeProvider } from "../../context/ThemeContext";
+import { tailwindTheme } from "../../themes/tailwind";
+import { bootstrapTheme } from "../../themes/bootstrap";
+import { customTheme } from "../../themes/custom";
 import EditableString from "./EditableString";
 import EditableNumber from "./EditableNumber";
 import EditableAmount from "./EditableAmount";
@@ -70,69 +74,69 @@ import daysOfWeek from "./daysWeek";
 import { useEffect } from "react";
 
 const FormLayout = () => {
-  const { t } = AppProvider.useAppContext();
-  const [textOneLine, setTextOneLine] = useLSState(
-    "textOneLine",
-    "Text in one line"
-  );
-  const [numberValue, setNumberValue] = useLSState("numberValue", 0);
-  const [amountValue, setAmountValue] = useLSState("amountValue", 0);
-  const [currency, setCurrency] = useLSState("currency", defaultCurrencies[0]);
-  const [timeValue, setTimeValue] = useLSState("timeValue", "10:00");
-  const [selectedDay, setSelectedDay] = useLSState("selectedDay", "Day");
+	const { t } = AppProvider.useAppContext();
+	const [textOneLine, setTextOneLine] = useLSState(
+		"textOneLine",
+		"Text in one line"
+	);
+	const [numberValue, setNumberValue] = useLSState("numberValue", 0);
+	const [amountValue, setAmountValue] = useLSState("amountValue", 0);
+	const [currency, setCurrency] = useLSState("currency", defaultCurrencies[0]);
+	const [timeValue, setTimeValue] = useLSState("timeValue", "10:00");
+	const [selectedDay, setSelectedDay] = useLSState("selectedDay", "Day");
 
-  useEffect(() => {
-    console.log("selectedDay has changed:", selectedDay);
-  }, [selectedDay]);
+	useEffect(() => {
+		console.debug("selectedDay has changed:", selectedDay);
+	}, [selectedDay]);
 
-  return (
-    <>
-      <div className="flex flex-col gap-5">
-        <EditableString
-          id="textOneLine"
-          name="textOneLine"
-          label="Name"
-          // label={t("Name")}
-          value={textOneLine}
-          onChange={setTextOneLine}
-        />
-        <EditableNumber
-          id="numberValue"
-          name="numberValue"
-          label={t("Number")}
-          value={numberValue}
-          onChange={setNumberValue}
-        />
-        <EditableAmount
-          id="amountValue"
-          name="amountValue"
-          label={t("Amount")}
-          value={amountValue}
-          onChange={setAmountValue}
-          currency={currency}
-          setCurrency={setCurrency}
-          t={t}
-        />
-        <EditableTime
-          id="timeValue"
-          name="timeValue"
-          label={t("Time")}
-          value={timeValue}
-          onInput={setTimeValue}
-        />
-        <EditableSelect
-          id="daysOfWeek"
-          name="daysOfWeek"
-          label="Days of the week"
-          value={selectedDay}
-          onChange={setSelectedDay}
-          options={daysOfWeek}
-        />
-      </div>
+	return (
+		<ThemeProvider theme={tailwindTheme}>
+			<div className="flex flex-col gap-5">
+				<EditableString
+					id="textOneLine"
+					name="textOneLine"
+					label="Name"
+					// label={t("Name")}
+					value={textOneLine}
+					onChange={setTextOneLine}
+				/>
+				<EditableNumber
+					id="numberValue"
+					name="numberValue"
+					label={t("Number")}
+					value={numberValue}
+					onChange={setNumberValue}
+				/>
+				<EditableAmount
+					id="amountValue"
+					name="amountValue"
+					label={t("Amount")}
+					value={amountValue}
+					onChange={setAmountValue}
+					currency={currency}
+					setCurrency={setCurrency}
+					t={t}
+				/>
+				<EditableTime
+					id="timeValue"
+					name="timeValue"
+					label={t("Time")}
+					value={timeValue}
+					onInput={setTimeValue}
+				/>
+				<EditableSelect
+					id="daysOfWeek"
+					name="daysOfWeek"
+					label="Days of the week"
+					value={selectedDay}
+					onChange={setSelectedDay}
+					options={daysOfWeek}
+				/>
+			</div>
 
-      <div> My table</div>
-    </>
-  );
+			<div> My table</div>
+		</ThemeProvider>
+	);
 };
 
 export default FormLayout;

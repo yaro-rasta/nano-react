@@ -114,24 +114,22 @@
  * });
  * ```
  */
-
+import { useTheme } from "../../context/ThemeContext";
 import PropTypes from "prop-types";
 import EditableBase from "./EditableBase";
 import defaultCurrencies from "./currencies";
 
-const ViewComponent = ({
-  value,
-  label,
-  showLabel,
-  onClick,
-  currency,
-  t = (v) => v,
-}) => (
-  <div className="flex items-center w-full" onClick={onClick}>
-    {showLabel && label && <label className="mr-2">{t(label)}</label>}
-    <span>{`${value} ${currency.char}`}</span>
-  </div>
-);
+const ViewComponent = ({ value, label, showLabel, onClick, currency }) => {
+  const theme = useTheme();
+  return (
+    <div className={theme.viewContainer} onClick={onClick}>
+      {showLabel && label && (
+        <label className={theme.viewLabel || theme.label}>{label}</label>
+      )}
+      <span className={theme.value}>{`${value} ${currency.char}`}</span>
+    </div>
+  );
+};
 
 ViewComponent.propTypes = {
   value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
@@ -158,10 +156,11 @@ const EditComponent = ({
   currencies,
   t = (v) => v,
 }) => {
+  const theme = useTheme();
   return (
-    <div className="flex items-center w-full">
+    <div className={theme.editContainer}>
       {showLabel && label && (
-        <label htmlFor={id} className="mr-2">
+        <label htmlFor={id} className={theme.editLabel || theme.label}>
           {label}
         </label>
       )}
@@ -170,7 +169,7 @@ const EditComponent = ({
         id={id}
         name={name}
         value={value}
-        className="border rounded p-2 w-full"
+        className={theme.input}
         onInput={onInput}
       />
       <select
@@ -179,7 +178,7 @@ const EditComponent = ({
         // тому має ще й спрацьовувати onChange, тобто value = { amount, currency }
         // де amount це сума, а currency це код валюти
         onChange={(e) => onCurrencyChange(e.target.value)}
-        className="ml-2 border rounded p-2"
+        className={theme.select}
       >
         {currencies.map((curr) => (
           <option key={curr.code} value={curr.code}>
