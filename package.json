@@ -15,8 +15,8 @@
 	"private": false,
 	"version": "1.1.0",
 	"type": "module",
-	"main": "dist/nano-react.umd.js",
-	"module": "dist/nano-react.es.js",
+	"main": "dist/nanoweb-react.umd.js",
+	"module": "dist/nanoweb-react.es.js",
 	"scripts": {
 		"start": "npm run dev",
 		"dev": "vite",
