@@ -1,4 +1,3 @@
-import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import DocsLayout from '../components/DocsLayout';
 import MarkdownRenderer from '../components/MarkdownRenderer';
