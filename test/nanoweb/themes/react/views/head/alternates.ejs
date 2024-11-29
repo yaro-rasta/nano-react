@@ -1,0 +1,6 @@
+	<!-- Alternate links for different languages -->
+	<% if (locals.$alternates) { %>
+		<% Object.entries(locals.$alternates).forEach(([lang, url]) => { %>
+			<link rel="alternate" hreflang="<%= lang %>" href="<%= url %>">
+		<% }) %>
+	<% } %>

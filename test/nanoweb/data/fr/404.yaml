@@ -1,0 +1,9 @@
+title: Page non trouvée
+desc: La page que vous recherchez n'existe pas ou a été déplacée.
+page:
+  content:
+    - h1: 404 - Page non trouvée
+    - p: La page que vous recherchez n'existe pas ou a été déplacée.
+    - p:
+      - a: Retour à l'accueil
+        $href: /

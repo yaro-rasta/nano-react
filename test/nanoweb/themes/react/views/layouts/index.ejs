@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="<%= locals.$lang %>">
+<head>
+	<%- include('/head/meta') %>
+	<%- include('/head/alternates') %>
+	<%- include('/head/og') %>
+	<%- include('/head/twitter') %>
+	<%- include('/head/icon') %>
+</head>
+<body>
+	<div id="app">
+		<%- locals.nano2html(locals.page?.content || '') %>
+	</div>
+
+	<!-- React entry point -->
+	<script type="module" src="/src/main.jsx"></script>
+</body>
+</html>

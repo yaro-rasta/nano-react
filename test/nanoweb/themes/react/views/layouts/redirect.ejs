@@ -1,0 +1,30 @@
+<% 
+locals.page = {
+	title: l('Redirecting...', locals.$l),
+	desc: l('You are being redirected to', locals.$l) + locals.$redirect + '.',
+};
+%>
+<!DOCTYPE html>
+<html lang="<%= locals.$lang %>">
+<head>
+	<%- include('/head/meta') %>
+	<%- include('/head/alternates') %>
+	<%- include('/head/twitter') %>
+	<%- include('/head/icon') %>
+	<meta http-equiv="refresh" content="3;url=<%= locals.$redirect %>">
+	<meta name="robots" content="noindex">	
+	<meta property="og:url" content="<%= locals.$redirect %>">
+</head>
+<body>
+	<div id="redirect">
+		<p><%= l('You are being redirected to', locals.$l) %> <a href="<%= locals.$redirect %>"><%= locals.$redirect %></a>.</p>
+		<p><%= l('If you are not redirected automatically, click the link above.', locals.$l) %></p>
+	</div>
+
+	<script>
+		setTimeout(() => {
+			window.location.href = "<%= locals.$redirect %>";
+		}, 3000);
+	</script>
+</body>
+</html>

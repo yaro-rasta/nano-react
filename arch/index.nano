@@ -1,0 +1,20 @@
+# Архітектура проєкту nanoweb-react
+мета:
+  - розробити компоненти для редагування даних (nano-format):
+    - які можна зручно використовувати у різних проєктах через npm install nanoweb-react
+    - які можна гнучко налаштовувати через стилі або конфігурацію, так як це відбувається у bootstrap або tailwind
+
+компоненти:
+  форми:
+    - авторизація
+    - реєстрація
+  базові елементи:
+    - EditableString
+    - EditableText
+    - EditableBoolean
+    - EditableNumber
+    - EditableAmount
+    - EditableDate
+    - EditableTime
+    - EditableNANO
+    - EditableHTML

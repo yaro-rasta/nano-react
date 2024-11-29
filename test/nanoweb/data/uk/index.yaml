@@ -1,0 +1,10 @@
+title: React додаток до nan•web платформи
+desc: Front-end компоненти для nan•web платформи
+page:
+  content:
+    - $src: picture.jpg@4x3-h600.webp
+      img: true
+    - p: Використовуємо front-end компоненти react для будівництва веб додатків.
+    - code: |
+        npm install nanoweb-react
+        npm start

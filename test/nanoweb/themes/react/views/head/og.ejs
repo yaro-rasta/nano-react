@@ -1,0 +1,8 @@
+	<!-- Open Graph meta tags for social sharing -->
+	<meta property="og:title" content="<%= locals.page?.title || 'Page Title' %>">
+	<meta property="og:description" content="<%= locals.page?.desc || 'Page description' %>">
+	<% if (locals.page?.image) { %>
+		<meta property="og:image" content="<%= locals.page.image %>">
+	<% } %>
+	<meta property="og:url" content="<%= locals.$host + locals.$uri %>">
+	<meta property="og:type" content="website">

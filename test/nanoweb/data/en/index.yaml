@@ -1,0 +1,8 @@
+title: React application for the nan•web platform
+desc: Front-end components for the nan•web platform
+page:
+  content:
+    - p: Using React front-end components to build web applications.
+    - code: |
+        npm install nanoweb-react
+        npm start

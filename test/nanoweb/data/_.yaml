@@ -1,0 +1,4 @@
+$theme: react
+$layout: index
+$l:
+  Hello: Hello

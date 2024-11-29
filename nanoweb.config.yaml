@@ -1,0 +1,102 @@
+all:
+  ROOT_DIR: ./test/nanoweb
+  HOST: https://nanoweb.yaro.page
+  HOST_EDITOR: https://cms.yaro.page
+  SERVER_PORT: 3993
+  STATIC_ALLOWED:
+    - /i/
+    - /thumb/
+  server/tiny: false
+  server/cors:
+    origin:
+      - https://localhost:3333
+    methods: "*"
+    headers: "*"
+  render/robots.txt:
+    rows:
+      - "User-agent: *"
+      - "Allow: /"
+  render/search:
+    blockRowsLimit: 3
+    blockSizeLimit: 0
+    ignore:
+      - /{lang}/404
+      - /404*
+      - /.git*
+      - "*.pdf"
+      - "*.doc"
+      - "*.zip"
+    gallery: null
+    imageKeys:
+      - ogImage
+      - image
+      - thumb
+    categories:
+      - en/docs.json+files-content
+      - uk/docs.json+files-content
+  gallery:
+    thumb: 4-3-h300px-q90
+    alwaysWEBP: true
+  themes:
+    - react
+  data/field/categories: $categories
+  data/field/category: $category
+  data/field/catalog: $catalog
+  data/field/global: global
+private:
+  render/modules:
+    item:
+      - gallery
+      - dev
+      - references
+      - translations
+      - html
+    html: []
+    final: []
+  handlers:
+    - server/api
+  server/ssl:
+    private: ./.keys/private.key
+    public: ./.keys/certificate.crt
+  STATIC_ALLOWED:
+    - /favicon.ico
+    - /css/
+    - /js/
+    - /img/
+    - /media/
+    - /modules/
+    - /nwe/
+    - /thumb/
+    - /translation.
+    - /sitemap.
+    - /sitemaps
+    - /robots.txt
+public:
+  render/modules:
+    item:
+      - search
+      - gallery
+      - htaccess
+      - sitemapXML
+      - robotsTXT
+      - translations
+      - references
+      - html
+    html:
+      - scripts
+      - styles
+      - emails
+      - links
+      - minify
+      - save
+    final: []
+  publish/method: dist
+search:
+  render/modules:
+    item:
+      - search
+index:
+  render/modules:
+    item:
+      - translations
+      - sitemapXML

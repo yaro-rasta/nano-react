@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="<%= locals.$lang %>">
+<head>
+	<%- include('/head/meta') %>
+	<%- include('/head/alternates') %>
+	<%- include('/head/og') %>
+	<%- include('/head/twitter') %>
+	<%- include('/head/icon') %>
+</head>
+
+<body>
+	<div id="app">
+		<%- locals.nano2html(locals.page?.content || '') %>
+	</div>
+
+	<!-- Optional styles -->
+	<style>
+		body {
+			font-family: Arial, sans-serif;
+			text-align: center;
+			margin: 0;
+			padding: 0;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+			height: 100vh;
+			color: #333;
+		}
+
+		h1 {
+			font-size: 3rem;
+			margin-bottom: 1rem;
+		}
+
+		p {
+			margin-bottom: 1rem;
+			font-size: 1.2rem;
+		}
+
+		a.button {
+			display: inline-block;
+			padding: 10px 20px;
+			background-color: #007BFF;
+			color: #fff;
+			text-decoration: none;
+			border-radius: 5px;
+		}
+
+		a.button:hover {
+			background-color: #0056b3;
+		}
+	</style>
+</body>
+
+</html>
