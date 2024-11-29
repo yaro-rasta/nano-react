@@ -45,17 +45,36 @@ function checkUncommitted() {
 	}	
 }
 
-function tagRelease() {
+function tagExists(tag) {
 	try {
-		// Create and push the new tag
-		runCommand(`git tag -a "v${version}" -m "Release version ${version}"`, 'Failed to tag the release.');
-		runCommand('git push origin --tags', 'Failed to push tags.');
+		const tags = execSync('git tag', { encoding: 'utf-8' })
+			.split('\n')
+			.map(t => t.trim());
+		return tags.includes(tag);
 	} catch (err) {
-		console.error(` ${RED}${FAIL} Tagging or pushing tags failed.${RESET}`);
+		console.error(` ${RED}${FAIL} Error checking existing tags.${RESET}`);
 		console.debug(err.stack);
 		process.exit(1);
 	}
 }
+
+function tagRelease() {
+	const tag = `v${version}`;
+	if (tagExists(tag)) {
+		console.log(` ${GREEN}${OK}${RESET} Tag "${tag}" already exists. Skipping tagging.`);
+	} else {
+		try {
+			// Create and push the new tag
+			runCommand(`git tag -a "${tag}" -m "Release version ${version}"`, 'Failed to tag the release.');
+			runCommand('git push origin --tags', 'Failed to push tags.');
+		} catch (err) {
+			console.error(` ${RED}${FAIL} Tagging or pushing tags failed.${RESET}`);
+			console.debug(err.stack);
+			process.exit(1);
+		}
+	}
+}
+
 // Step 1: Check for uncommitted changes
 checkUncommitted();
 
