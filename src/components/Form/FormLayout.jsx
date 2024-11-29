@@ -62,8 +62,6 @@ import { useLSState } from "../..";
 import { AppProvider } from "../../context/AppContext";
 import { ThemeProvider } from "../../context/ThemeContext";
 import { tailwindTheme } from "../../themes/tailwind";
-import { bootstrapTheme } from "../../themes/bootstrap";
-import { customTheme } from "../../themes/custom";
 import EditableString from "./EditableString";
 import EditableNumber from "./EditableNumber";
 import EditableAmount from "./EditableAmount";

@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useCallback, useRef, useMemo } from 'react'
 import PropTypes from 'prop-types'
-import { useLSState, useIDbState } from '..'
+import { useLSState } from '..'
 
 /**
  * @comment #dev/context.md
