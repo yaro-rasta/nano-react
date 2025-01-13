@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useCallback, useRef, useMemo } from 'react'
+import { createContext, useContext, useEffect, useCallback, useRef, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
 import { useLSState } from '..'
 
@@ -6,7 +6,7 @@ import { useLSState } from '..'
  * @comment #dev/context.md
  * ## Базовий контекст для додатку
  * ### Функції і дані
- * 1. Мова: мова вибрана користувачем, за замовченням обирається одна із доступних 
+ * 1. Мова: мова вибрана користувачем, за замовченням обирається одна із доступних
  * мов з Accept-Language заголовка.
  * 2. Тема: темна (нічна 1), світла (денна -1), система (системні налаштування 0).
  * 3. Accessibility: доступність у різних формах (горячі клавіші, обмежений зір, обмежений рух).
@@ -15,6 +15,9 @@ import { useLSState } from '..'
 const AppContext = createContext()
 
 export const AppProvider = ({ children, languagesAssetUrl = '/t/index.json' }) => {
+	// const defaultLanguagesCache = useMemo(() => ({}), []); // Keep memoization
+	// const [languagesCache, setLanguagesCache] = useState({})
+	// const [language, setLanguageState] = useState(null)
 	const [languagesCache, setLanguagesCache] = useLSState('languages', {})
 	const [language, setLanguageState] = useLSState('lang', null)
 	/**
@@ -24,6 +27,7 @@ export const AppProvider = ({ children, languagesAssetUrl = '/t/index.json' }) =
 	 */
 	// const [translations, setTranslations] = useIDbState('translations', {})
 	const [translations, setTranslations] = useLSState('translations', {})
+	// const [translations, setTranslations] = useState({})
 	const languagesRef = useRef(false)
 	const translationsRef = useRef(false)
 

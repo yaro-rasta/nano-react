@@ -1,17 +1,19 @@
 import reactLogo from '/react.svg'
 import viteLogo from '/vite.svg'
 import nanoLogo from './assets/nano.svg'
-import { useSSState, useLSState, useIDbState } from '.'
+import { useSSState, useLSState, useIDbState, useRemoteState } from '.'
 import './App.css'
 
 function App() {
 	const [count, setCount] = useLSState('app.count', 0)
-	const [sessionCount, setSessionCount] = useSSState('app.count', 0);
-	const [dbCount, setDbCount] = useIDbState('app.count', 0);
+	// const [count, setCount] = useState(0)
+	const [sessionCount, setSessionCount] = useSSState('app.count', 0)
+	const [dbCount, setDbCount] = useIDbState('app.count', 0)
+	const [remote] = useRemoteState('/remoteState.json', [])
 
 	return (
 		<>
-			<div>
+			<div style={{ display: 'flex', justifyContent: 'space-evenly' }}>
 				<a href="https://gitlab.com/nan.web/" target="_blank">
 					<img src={nanoLogo} className="logo" alt="Nano logo" />
 				</a>
@@ -37,9 +39,18 @@ function App() {
 						indexedDB.count is {dbCount}
 					</button>
 				</div>
-				<p>
+				<p style={{ marginTop: '1rem' }}>
 					Edit <code>src/App.jsx</code> and save to test HMR
 				</p>
+				<p>
+					Remote state loaded from
+					<code>/remoteState.json</code>
+				</p>
+				<ul>
+					{remote.map((li, i) => (
+						<li key={i}>{li}</li>
+					))}
+				</ul>
 			</div>
 			<div className=''>
 				{/* @todo render a playground with the components, but better already a documentation with the examples */}

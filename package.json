@@ -15,16 +15,25 @@
 	"private": false,
 	"version": "1.1.1",
 	"type": "module",
-	"main": "dist/nanoweb-react.umd.js",
-	"module": "dist/nanoweb-react.es.js",
+	"types": "./dist/index.d.ts",
+	"main": "./dist/index.cjs",
+	"module": "./dist/index.esm.js",
+	"exports": {
+		".": {
+			"input": "./src/index.js",
+			"require": "./dist/index.cjs",
+			"import": "./dist/index.esm.js",
+			"types": "./dist/index.d.ts"
+		}
+	},
 	"scripts": {
 		"start": "npm run dev",
 		"dev": "vite",
-		"build": "vite build",
+		"build": "rollup -c",
 		"lint": "eslint .",
 		"preview": "vite preview",
 		"release": "node publish.mjs",
-		"test": "echo -e \"Nothing to test yet\""
+		"test": "NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules\" npx jest --verbose"
 	},
 	"dependencies": {
 		"markdown-to-jsx": "^7.5.0",
@@ -33,18 +42,29 @@
 		"react-router-dom": "^6.27.0"
 	},
 	"devDependencies": {
+		"@babel/core": "^7.25.2",
+		"@babel/preset-env": "^7.26.0",
+		"@babel/preset-react": "^7.24.7",
 		"@eslint/js": "^9.13.0",
+		"@rollup/plugin-babel": "^6.0.4",
+		"@rollup/plugin-commonjs": "^26.0.1",
+		"@testing-library/react": "^16.1.0",
 		"@types/react": "^18.3.12",
 		"@types/react-dom": "^18.3.1",
 		"@vitejs/plugin-react-swc": "^3.5.0",
 		"autoprefixer": "^10.4.20",
+		"babel-jest": "^29.7.0",
 		"eslint": "^9.13.0",
 		"eslint-plugin-react": "^7.37.2",
 		"eslint-plugin-react-hooks": "^5.0.0",
 		"eslint-plugin-react-refresh": "^0.4.14",
 		"globals": "^15.11.0",
+		"jest": "^29.7.0",
+		"jest-environment-jsdom": "^29.7.0",
+		"jest-mock": "^29.7.0",
 		"nanoweb-fs": "^1.10.2",
 		"postcss": "^8.4.47",
+		"rollup": "^4.21.2",
 		"stylelint": "^16.10.0",
 		"stylelint-config-standard": "^36.0.1",
 		"supports-color": "^9.4.0",

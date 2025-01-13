@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
+import { fromJSON, toJSON } from './storage';
 
 const subscriptions = new Map();
 
@@ -46,7 +47,7 @@ const getDbValue = async (dbName, storeName, key) => {
 		const request = objectStore.get(key);
 
 		request.onsuccess = (event) => {
-			resolve(event.target.result ? event.target.result.value : undefined);
+			resolve(event.target.result ? fromJSON(event.target.result.value) : undefined);
 		};
 
 		request.onerror = (event) => {
@@ -60,7 +61,7 @@ const setDbValue = async (dbName, storeName, key, value) => {
 	return new Promise((resolve, reject) => {
 		const transaction = db.transaction([storeName], 'readwrite');
 		const objectStore = transaction.objectStore(storeName);
-		const request = objectStore.put({ id: key, value });
+		const request = objectStore.put({ id: key, value: toJSON(value) });
 
 		request.onsuccess = () => {
 			notify(key, value);
@@ -73,7 +74,7 @@ const setDbValue = async (dbName, storeName, key, value) => {
 	});
 };
 
-const useDBState = (key, defaultValue, dbOpts = { name: 'db', store: 'store' }) => {
+export const useIDbState = (key, defaultValue, dbOpts = { name: 'db', store: 'store', sanitizer: (v) => v }) => {
 	const [value, setValue] = useState(defaultValue);
 	const didInit = useRef(false);
 
@@ -107,7 +108,15 @@ const useDBState = (key, defaultValue, dbOpts = { name: 'db', store: 'store' }) 
 		}
 	}, [dbName, storeName, key, serializedValue, value]);
 
-	return [value, setValue];
-};
+	// Apply sanitizer to updated values
+	const sanitizedSetState = (value) => {
+		if (typeof value === 'function') {
+			// If value is a function, apply sanitizer to the result of the function
+			setValue((prevState) => sanitizer(value(prevState)))
+		} else {
+			setValue(sanitizer(value))
+		}
+	}
 
-export { useDBState };
+	return [value, sanitizedSetState]
+};

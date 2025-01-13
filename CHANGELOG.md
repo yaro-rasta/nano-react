@@ -21,6 +21,37 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] - 2025-01-13
+
+### Added
+- **`sanitizer` Support:**
+  - Added `sanitizer` function to `useLSState`, `useSSState`, and `useIDbState` hooks for value preprocessing before setting them in storage.
+  - Improved sanitization on both initialization and updates.
+
+- **`useRemoteState`:**
+  - Introduced a new hook to fetch and manage remote state from a URL.
+  - Handles base URL resolution and gracefully manages errors during fetch operations.
+
+- **Testing Enhancements:**
+  - Added comprehensive test coverage for `useLSState`, `useSSState`, `useIDbState`, and `useRemoteState`.
+  - Added transformer tests for `toJSON` and `fromJSON` to handle advanced serialization and deserialization scenarios.
+
+- **Rollup Configuration:**
+  - Added support for `.d.ts` file copying in Rollup builds.
+  - Included a plugin to preserve JSDoc comments in the output.
+
+### Fixed
+- Resolved an issue in `useLSState` and `useSSState` where state did not reset correctly when the key changed.
+- Fixed infinite loop scenarios in storage hooks caused by repeated state updates.
+
+### Changed
+- Updated `fromJSON` to handle invalid JSON gracefully with enhanced error handling.
+- Improved example application to demonstrate all hooks, including the new `useRemoteState`.
+- Reorganized build system with explicit `exports` for `input`, `require`, `import`, and `types` paths.
+
+### Removed
+- Removed redundant imports and unused variables in `App.jsx` and context files.
+
 ## [1.1.1] - 2024-11-29
 
 ### Fixed
