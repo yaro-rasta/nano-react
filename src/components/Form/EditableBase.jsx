@@ -1,4 +1,4 @@
-import { useTheme } from "../../context/ThemeContext";
+import { useTheme } from "../../context/useTheme";
 import { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import { handleKeyPress } from "./utils";
@@ -6,16 +6,16 @@ import { handleKeyPress } from "./utils";
 /**
  * @comment #dev/editable.md
  * # EditableBase Component Documentation
- * 
+ *
  * ## Overview
  * The `EditableBase` component provides a flexible and customizable interface for switching between view and edit modes for an input field. This component is useful for scenarios where users need to view a value and then edit it seamlessly, offering various options for customization and behavior.
- * 
+ *
  * ## Props
- * 
+ *
  * ### Required Props
  * - **`value`** (`string | number`): The initial value to display in view mode and edit in edit mode. This is the core data that will be manipulated.
  * - **`name`** (`string`): The name attribute of the input field. This is used for identification and form submission purposes.
- * 
+ *
  * ### Optional Props
  * - **`id`** (`string`): The unique identifier for the input field. Useful for DOM selection or accessibility.
  * - **`onChange`** (`function`): A callback function triggered when the value is changed and saved. The new value is passed as an argument. Default: `() => true`.
@@ -32,64 +32,64 @@ import { handleKeyPress } from "./utils";
  * - **`config`** (`object`): Configuration object with properties:
  *   - **`revertOnEscape`** (`boolean`): If `true`, reverts the value to the original when the Escape key is pressed. Default: `true`.
  *   - **`clickOutsideToSave`** (`boolean`): If `true`, clicking outside the input field saves the current value and exits edit mode. Default: `true`.
- * 
+ *
  * ### Additional Props
  * - **`rest`**: Additional props that are spread onto the input element.
- * 
+ *
  * ## Functionality
- * 
+ *
  * ### Modes of Operation
  * 1. **View Mode**: Displays the value in a read-only format. The label is optionally shown, and the component is focusable for user interaction.
  * 2. **Edit Mode**: Transforms into an editable input field where the user can modify the value. The label can also be shown if `labelInEdit` is `true`.
- * 
+ *
  * ### Core Functions
  * - **handleCancel**: Reverts the input to the original value, exits edit mode, and calls `onCancel`.
  * - **handleChange**: Saves the updated value, calls `onChange`, and exits edit mode.
  * - **handleInput**: Updates the internal state (`isolated`) as the user types and calls `onInput`.
  * - **handleViewClick**: Switches from view mode to edit mode when the view element is clicked.
  * - **handleEditKeyDown**: Manages keyboard interactions, supporting Enter to save and Escape to cancel.
- * 
+ *
  * ### Lifecycle Hooks (Step-by-step Testing Guide)
- * 
+ *
  * 1. **Initial Render**
  *    - Ensure the component renders in the correct mode (`view` or `edit`) based on the `mode` prop.
  *    - Verify that the `value` is correctly displayed in view mode and that the appropriate elements (label and input) are rendered according to `labelInView` and `labelInEdit`.
- * 
+ *
  * 2. **Switching to Edit Mode**
  *    - Click on the view element or focus on it using the `tabIndex` to trigger `handleViewClick`.
  *    - Confirm that `editMode` is set to `'edit'` and that the input element receives focus.
  *    - Check if the `originalValue` is saved before entering edit mode.
  *    - If a custom `editComponent` is provided, ensure it is rendered correctly with the appropriate props.
- * 
+ *
  * 3. **Editing the Value**
  *    - Start typing in the input field and verify that `handleInput` updates the `isolated` state with the new value.
  *    - Check that `onInput` is called with the correct value.
  *    - Ensure that the component remains in edit mode as long as the user is interacting with the input.
- * 
+ *
  * 4. **Saving the Value**
  *    - Press the `Enter` key or click outside the component (if `clickOutsideToSave` is enabled) to trigger `handleChange`.
  *    - Verify that `handleChange` is called with the correct updated value.
  *    - Ensure `onChange` is called and `editMode` switches back to `'view'`.
  *    - Confirm that the new value is displayed in view mode.
- * 
+ *
  * 5. **Canceling Edit Mode**
  *    - Press the `Escape` key to trigger `handleCancel`.
  *    - Check that `handleCancel` reverts the `isolated` state to `originalValue`.
  *    - Ensure `onCancel` is called and `editMode` switches back to `'view'`.
  *    - Verify that the original value is displayed in view mode.
- * 
+ *
  * 6. **Focus Management**
  *    - On entering edit mode, ensure that the input element is focused using the `useEffect` hook.
  *    - Check that the component correctly handles focus when switching between modes.
- * 
+ *
  * 7. **Click Outside to Save**
  *    - If `clickOutsideToSave` is `true`, click anywhere outside the component to test if the value is saved.
  *    - Verify that `handleClickOutside` correctly detects the outside click and triggers `handleChange` or switches to view mode without saving (based on configuration).
- * 
+ *
  * 8. **Unmounting**
  *    - Ensure that all event listeners (e.g., `mousedown`, `touchstart`) added by `useEffect` are properly removed when the component is unmounted.
  *    - Test this by dynamically removing the component from the DOM and checking for memory leaks or lingering event listeners.
- * 
+ *
  * ### Testing Checklist
  * - [ ] Component initializes correctly in `view` or `edit` mode.
  * - [ ] Clicking the view element switches to edit mode and focuses the input.
@@ -99,14 +99,14 @@ import { handleKeyPress } from "./utils";
  * - [ ] Clicking outside the component saves the value if `clickOutsideToSave` is enabled.
  * - [ ] Event listeners are cleaned up when the component is unmounted.
  * - [ ] Custom components (`editComponent` and `viewComponent`) receive the correct props.
- * 
+ *
  * ## Usage Example
  * ```jsx
  * import EditableBase from './EditableBase'
- * 
+ *
  * const MyComponent = () => {
  *   const [value, setValue] = useState('Sample Text')
- * 
+ *
  *   return (
  *     <EditableBase
  *       id="editable-field"
@@ -120,7 +120,7 @@ import { handleKeyPress } from "./utils";
  *   )
  * }
  * ```
- * 
+ *
  * ## Notes
  * - **Customization**: You can provide custom components for both view and edit modes, making the component highly flexible.
  * - **Keyboard Accessibility**: The component handles key events for accessibility and improved user experience.

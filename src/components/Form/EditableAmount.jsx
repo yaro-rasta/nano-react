@@ -114,7 +114,7 @@
  * });
  * ```
  */
-import { useTheme } from "../../context/ThemeContext";
+import { useTheme } from "../../context/useTheme";
 import PropTypes from "prop-types";
 import EditableBase from "./EditableBase";
 import defaultCurrencies from "./currencies";

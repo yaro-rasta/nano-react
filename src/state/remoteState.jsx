@@ -34,7 +34,7 @@ export function useRemoteState (url, initialState, opts = { useBaseHref: true })
 		}
 
 		fetchData()
-	}, [url])
+	}, [url, opts.useBaseHref])
 
 	return [state, setState]
 }

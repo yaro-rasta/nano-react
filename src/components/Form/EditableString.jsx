@@ -94,7 +94,7 @@
  * });
  * ```
  */
-import { useTheme } from "../../context/ThemeContext";
+import { useTheme } from "../../context/useTheme";
 import EditableBase from "./EditableBase";
 import PropTypes from "prop-types";
 

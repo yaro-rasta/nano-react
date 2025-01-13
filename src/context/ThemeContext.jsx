@@ -1,5 +1,5 @@
-import { createContext, useContext } from "react";
-import PropTypes from "prop-types"; // Import PropTypes for validation
+import { createContext } from "react";
+import PropTypes from "prop-types";
 
 const ThemeContext = createContext();
 
@@ -13,5 +13,4 @@ ThemeProvider.propTypes = {
 	children: PropTypes.node.isRequired,
 };
 
-// Export useTheme after the component to avoid Fast Refresh warning
-export const useTheme = () => useContext(ThemeContext);
+export default ThemeContext;

@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useCallback, useRef, useMemo, useState } from 'react'
+import { createContext, useContext, useEffect, useCallback, useRef, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import { useLSState } from '..'
 
@@ -15,9 +15,6 @@ import { useLSState } from '..'
 const AppContext = createContext()
 
 export const AppProvider = ({ children, languagesAssetUrl = '/t/index.json' }) => {
-	// const defaultLanguagesCache = useMemo(() => ({}), []); // Keep memoization
-	// const [languagesCache, setLanguagesCache] = useState({})
-	// const [language, setLanguageState] = useState(null)
 	const [languagesCache, setLanguagesCache] = useLSState('languages', {})
 	const [language, setLanguageState] = useLSState('lang', null)
 	/**
@@ -25,9 +22,7 @@ export const AppProvider = ({ children, languagesAssetUrl = '/t/index.json' }) =
 	 * ### Переклади (internatialization)
 	 * Зберігається у форматі: { 'en': { 'Cancel': 'Cancel', 'next': 'Go next' } }
 	 */
-	// const [translations, setTranslations] = useIDbState('translations', {})
 	const [translations, setTranslations] = useLSState('translations', {})
-	// const [translations, setTranslations] = useState({})
 	const languagesRef = useRef(false)
 	const translationsRef = useRef(false)
 

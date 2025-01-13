@@ -59,7 +59,7 @@
  * - Пропс `onInput` дозволяє контролювати зміни значення часу у батьківському компоненті.
  *
  */
-import { useTheme } from "../../context/ThemeContext";
+import { useTheme } from "../../context/useTheme";
 import EditableBase from "./EditableBase";
 import PropTypes from "prop-types";
 

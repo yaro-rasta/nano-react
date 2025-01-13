@@ -77,6 +77,7 @@ const setDbValue = async (dbName, storeName, key, value) => {
 export const useIDbState = (key, defaultValue, dbOpts = { name: 'db', store: 'store', sanitizer: (v) => v }) => {
 	const [value, setValue] = useState(defaultValue);
 	const didInit = useRef(false);
+	const sanitizer = dbOpts.sanitizer;
 
 	// Extracted dependencies to avoid complex expressions in useEffect
 	const dbName = dbOpts.name;
