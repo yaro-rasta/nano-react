@@ -21,9 +21,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.3.0] - 2025-02-02
+## [1.3.1] - 2025-02-02
 
-## Changelog
+### Changed
+
+- Release script is switched to the workspace `nanoweb` monorepo.
+
+### Removed
+
+- The legacy version of the release script `publish.mjs`
+
+## [1.3.0] - 2025-02-02
 
 ### Added
 - Implemented `useLSState` unit tests in `test/browser/state/localStorage.test.jsx` to validate localStorage state handling.

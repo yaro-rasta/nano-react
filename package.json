@@ -32,7 +32,7 @@
 		"build": "rollup -c",
 		"lint": "node ../../node_modules/eslint/bin/eslint.js .",
 		"preview": "vite preview",
-		"release": "node publish.mjs",
+		"release": "node ../../bin/release.js",
 		"test": "vitest --run",
 		"clean": "node ../../bin/clean.js",
 		"ws:check": "node ../../bin/check-workspace.js",
