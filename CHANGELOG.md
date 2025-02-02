@@ -21,6 +21,46 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.0] - 2025-02-02
+
+## Changelog
+
+### Added
+- Implemented `useLSState` unit tests in `test/browser/state/localStorage.test.jsx` to validate localStorage state handling.
+- Added `vitest` plugin to `eslint.config.js` for linting Vitest-specific rules.
+- Introduced `ws:check`, `ws:workspace`, `ws:latest`, and `ws:init` scripts in `package.json` for workspace management.
+- Added missing `husky` pre-commit hook to enforce workspace checks.
+- Included `@testing-library/jest-dom` for enhanced testing assertions in `package.json`.
+- Introduced `clean` script to `package.json` for workspace cleanup.
+- Added `vitest.setup.js` to configure a jsdom-like test environment and mock `localStorage` and `sessionStorage`.
+- Included `react` import in `src/context/AppContext.jsx` to prevent runtime errors.
+
+### Changed
+- Migrated test framework from `jest` to `vitest` in `package.json`.
+- Updated `test` script in `package.json` to use `vitest --run` instead of `jest`.
+- Improved ESLint configuration to better handle React, Hooks, and Vitest environments in `eslint.config.js`.
+- Upgraded dependencies in `package.json`, including `react`, `react-router-dom`, and `eslint` plugins.
+- Refactored `useTheme.jsx` to correctly import `ThemeContext` instead of `ThemeProvider`.
+- Fixed accessibility by adding `rel="noreferrer"` to external links in `src/App.jsx`.
+- Modified `test/build.test.js` to remove redundant `@jest/globals` imports.
+- Refactored `helloWorld.test.js` to use `test` instead of `it` for consistency with Vitest.
+- Improved `storage.test.js` by adding mocks for `console.error` and `console.debug` to avoid unnecessary logs during test failures.
+- Adjusted `eslint.config.js` ignores to include `.vite_cache` and `dist-app` directories.
+
+### Fixed
+- Resolved incorrect imports in `src/context/useTheme.jsx`.
+- Fixed incorrect handling of localStorage sanitization in `test/browser/state/localStorage.test.jsx`.
+- Corrected the `useLSState` reference in `test/build.test.js`.
+- Addressed an issue where changing localStorage keys did not properly reset state in `useLSState` tests.
+- Fixed missing `defaultValue` handling in `test/browser/state/localStorage.test.jsx`.
+- Ensured proper React import handling in `src/context/AppContext.jsx`.
+- Fixed inconsistent JSON transformation handling in `storage.test.js`.
+
+### Removed
+- Removed `@jest/globals` imports from tests, replacing them with `vitest` equivalents.
+- Eliminated unused `collapsed` state logic in `src/App.jsx`.
+
+
 ## [1.2.0] - 2025-01-13
 
 ### Added

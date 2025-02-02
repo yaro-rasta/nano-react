@@ -10,17 +10,21 @@ function App() {
 	const [sessionCount, setSessionCount] = useSSState('app.count', 0)
 	const [dbCount, setDbCount] = useIDbState('app.count', 0)
 	const [remote] = useRemoteState('/remoteState.json', [])
+	// const [collapsed, setCollapsed] = useLSState('app.collapsed', [])
+	const handleCollapse = () => {
+
+	}
 
 	return (
 		<>
 			<div style={{ display: 'flex', justifyContent: 'space-evenly' }}>
-				<a href="https://gitlab.com/nan.web/" target="_blank">
+				<a href="https://gitlab.com/nan.web/" target="_blank" rel="noreferrer">
 					<img src={nanoLogo} className="logo" alt="Nano logo" />
 				</a>
-				<a href="https://vite.dev" target="_blank">
+				<a href="https://vite.dev" target="_blank" rel="noreferrer">
 					<img src={viteLogo} className="logo" alt="Vite logo" />
 				</a>
-				<a href="https://react.dev" target="_blank">
+				<a href="https://react.dev" target="_blank" rel="noreferrer">
 					<img src={reactLogo} className="logo react" alt="React logo" />
 				</a>
 			</div>
@@ -48,7 +52,7 @@ function App() {
 				</p>
 				<ul>
 					{remote.map((li, i) => (
-						<li key={i}>{li}</li>
+						<li key={i} onClick={handleCollapse}>{li}</li>
 					))}
 				</ul>
 			</div>
